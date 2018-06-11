@@ -1,0 +1,99 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2766">2766</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 180K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	50
+
+
+int n, r;
+bool grid[MAX_N + 2][MAX_N + 2];
+bool states[MAX_N + 2][MAX_N + 2][4];
+
+
+bool calc(int x, int y, int dir, int&#38; ex, int&#38; ey)
+{
+	if (x == 0 || x == n + 1 || y == 0 || y == n + 1) {
+		ex = x, ey = y;
+		return true;
+	}
+
+	if (states[x][y][dir]) {
+		return false;
+	}
+
+	states[x][y][dir] = true;
+
+	if (grid[y][x]) {
+		switch (dir) {
+		case 0: return calc(x - 1, y, (dir + 3) % 4, ex, ey);
+		case 1: return calc(x, y - 1, (dir + 3) % 4, ex, ey);
+		case 2: return calc(x + 1, y, (dir + 3) % 4, ex, ey);
+		default: return calc(x, y + 1, (dir + 3) % 4, ex, ey);
+		}
+	}
+	else {
+		switch (dir) {
+		case 0: return calc(x, y - 1, dir, ex, ey);
+		case 1: return calc(x + 1, y, dir, ex, ey);
+		case 2: return calc(x, y + 1, dir, ex, ey);
+		default: return calc(x - 1, y, dir, ex, ey);
+		}
+	}
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		memset(grid, 0, sizeof(grid));
+		memset(states, 0, sizeof(states));
+
+		scanf_s(&#34;%d %d&#34;, &#38;n, &#38;r);
+		for (int j = 0; j &lt; r; ++j) {
+			int x, y; scanf_s(&#34;%d %d&#34;, &#38;x, &#38;y);
+			grid[y][x] = true;
+		}
+
+		int dir, sx, sy; scanf_s(&#34;%d %d&#34;, &#38;sx, &#38;sy);
+		if (sx == 0) {
+			sx = 1;
+			dir = 1;
+		}
+		else if (sx == n + 1) {
+			sx = n;
+			dir = 3;
+		}
+		else if (sy == 0) {
+			sy = 1;
+			dir = 2;
+		}
+		else {
+			sy = n;
+			dir = 0;
+		}
+
+		int ex, ey;
+		if (calc(sx, sy, dir, ex, ey)) {
+			printf(&#34;%d %d\n&#34;, ex, ey);
+		}
+		else {
+			printf(&#34;0 0\n&#34;);
+		}
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

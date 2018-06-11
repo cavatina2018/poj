@@ -1,0 +1,56 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_java.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2680">2680</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 5944K</td><td width=10px></td><td><b>Time:</b> 766MS</td></tr>
+<tr><td><b>Language:</b> Java</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_java" style="font-family:Courier New,Courier,monospace">import java.math.*;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+
+public class Main {
+	
+	public static final int MAX_N = 1000;
+	public static boolean[] states = new boolean[MAX_N + 1];
+	public static BigInteger[] f = new BigInteger[MAX_N + 1];
+	public static BigInteger[] g = new BigInteger[MAX_N + 1];
+	
+	
+	static void calc(int n)
+	{
+		if (states[n]) return;
+
+		calc(n - 1);
+		g[n] = f[n - 1].add(g[n - 1]);
+		f[n] = f[n - 1].add(g[n - 1]);
+		if (n % 2 == 0) f[n] = f[n].add(BigInteger.ONE);
+
+		states[n] = true;
+	}
+	
+	
+	public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+		
+		states[0] = true;
+		f[0] = BigInteger.ZERO;
+		g[0] = BigInteger.ZERO;
+
+		while(in.hasNext()) {
+			int n = in.nextInt();
+			calc(n);
+			System.out.println(f[n]);
+		}
+	}
+};</pre>
+</ul>
+</body></html>

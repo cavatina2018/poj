@@ -1,0 +1,153 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2882">2882</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 4956K</td><td width=10px></td><td><b>Time:</b> 235MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	100
+#define BUFLEN	(MAX_N * MAX_N * MAX_N + 1)
+
+
+bool space[MAX_N + 1][MAX_N + 1][MAX_N + 1];
+bool states[MAX_N + 1][MAX_N + 1][MAX_N + 1];
+int minx, maxx, miny, maxy, minz, maxz;
+char buffer_x[BUFLEN];
+char buffer_y[BUFLEN];
+char buffer_z[BUFLEN];
+int head, tail;
+
+
+bool add(int x, int y, int z)
+{
+	if (x &lt; minx || x &gt; maxx || y &lt; miny || y &gt; maxy || z &lt; minz || z &gt; maxz) {
+		return false;
+	}
+	if (space[x][y][z] || states[x][y][z]) {
+		return true;
+	}
+
+	states[x][y][z] = true;
+
+	if (x == minx || x == maxx || y == miny || y == maxy || z == minz || z == maxz) {
+		return false;
+	}
+
+	buffer_x[tail] = x;
+	buffer_y[tail] = y;
+	buffer_z[tail] = z;
+	tail = (tail + 1) % BUFLEN;
+
+	return true;
+}
+
+
+bool bfs(int x, int y, int z)
+{
+	states[x][y][z] = true;
+	buffer_x[0] = x;
+	buffer_y[0] = y;
+	buffer_z[0] = z;
+	head = 0, tail = 1;
+
+	bool res = true;
+
+	while (head != tail) {
+		x = buffer_x[head];
+		y = buffer_y[head];
+		z = buffer_z[head];
+		head = (head + 1) % BUFLEN;
+
+		if (!add(x - 1, y, z)) res = false;
+		if (!add(x + 1, y, z)) res = false;
+		if (!add(x, y - 1, z)) res = false;
+		if (!add(x, y + 1, z)) res = false;
+		if (!add(x, y, z - 1)) res = false;
+		if (!add(x, y, z + 1)) res = false;
+	}
+
+	return res;
+}
+
+
+int calc()
+{
+	int count = 0;
+	for (int j = minx + 1; j &lt; maxx; ++j) {
+		for (int k = miny + 1; k &lt; maxy; ++k) {
+			for (int l = minz + 1; l &lt; maxz; ++l) {
+				if (space[j][k][l] || states[j][k][l]) continue;
+				if (bfs(j, k, l)) {
+					++count;
+				}
+			}
+		}
+	}
+	return count;
+}
+
+
+void test()
+{
+	for (int i = 0; i &lt; 1000; ++i) {
+		memset(space, 0, sizeof(space));
+		memset(states, 0, sizeof(states));
+		minx = miny = minz = INT_MAX;
+		maxx = maxy = maxz = INT_MIN;
+
+		int n = rand() * rand() % 1000000;
+		for (int j = 0; j &lt; n; ++j) {
+			int x = rand() % 100 + 1, y = rand() % 100 + 1, z = rand() % 100 + 1;
+			space[x][y][z] = true;
+			if (x &gt; maxx) maxx = x;
+			if (x &lt; minx) minx = x;
+			if (y &gt; maxy) maxy = y;
+			if (y &lt; miny) miny = y;
+			if (z &gt; maxz) maxz = z;
+			if (z &lt; minz) minz = z;
+		}
+
+		printf(&#34;%d\n&#34;, calc());
+	}
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		int n; scanf_s(&#34;%d&#34;, &#38;n);
+
+		memset(space, 0, sizeof(space));
+		memset(states, 0, sizeof(states));
+		minx = miny = minz = INT_MAX;
+		maxx = maxy = maxz = INT_MIN;
+
+		for (int j = 0; j &lt; n; ++j) {
+			int x, y, z; scanf_s(&#34;%d %d %d&#34;, &#38;x, &#38;y, &#38;z);
+			space[x][y][z] = true;
+			if (x &gt; maxx) maxx = x;
+			if (x &lt; minx) minx = x;
+			if (y &gt; maxy) maxy = y;
+			if (y &lt; miny) miny = y;
+			if (z &gt; maxz) maxz = z;
+			if (z &lt; minz) minz = z;
+		}
+
+		printf(&#34;%d\n&#34;, calc());
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

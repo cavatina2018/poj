@@ -1,0 +1,89 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3061">3061</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 640K</td><td width=10px></td><td><b>Time:</b> 344MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+using namespace std;
+
+
+#define MAX_INT		0x7fffffff
+#define MAX_N	100000
+int N, S;
+int Numbers[MAX_N];
+
+
+int calc()
+{
+	int sum = 0, begin = 0, end = 0, res = MAX_INT;
+
+	while(end &lt; N || sum &gt;= S)
+	{
+		if (sum &lt; S)
+		{
+			sum += Numbers[end++];
+			if (sum &gt;= S)
+			{
+				int count = end - begin;
+				if (count == 1)
+				{
+					return 1;
+				}
+				if (count &lt; res)
+				{
+					res = count;
+				}
+			}
+		}
+		else
+		{
+			sum -= Numbers[begin++];
+			if (sum &gt;= S)
+			{
+				int count = end - begin;
+				if (count == 1)
+				{
+					return 1;
+				}
+				if (count &lt; res)
+				{
+					res = count;
+				}
+			}
+		}
+	}
+
+	if (res == MAX_INT)
+	{
+		res = 0;
+	}
+	return res;
+}
+
+
+int main()
+{
+	int t; cin &gt;&gt; t;
+	for (int i = 0; i &lt; t; ++i)
+	{
+		cin &gt;&gt; N &gt;&gt; S;
+		for (int j = 0; j &lt; N; ++j)
+		{
+			cin &gt;&gt; Numbers[j];
+		}
+		cout &lt;&lt; calc() &lt;&lt; endl;
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

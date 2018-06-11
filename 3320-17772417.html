@@ -1,0 +1,84 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3320">3320</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 1504K</td><td width=10px></td><td><b>Time:</b> 250MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	1000000
+
+
+int n, m;
+int book[MAX_N];
+int book2[MAX_N];
+int ideas[MAX_N];
+int ideas2[MAX_N];
+int idea_pagecounts[MAX_N];
+
+
+int calc()
+{
+	for (int i = 0; i &lt; n; ++i) {
+		ideas[i] = book[i];
+	}
+	sort(ideas, ideas + n);
+
+	m = 0;
+	ideas2[m++] = ideas[0];
+
+	for (int i = 1; i &lt; n; ++i) {
+		if (ideas[i] != ideas2[m - 1]) {
+			ideas2[m++] = ideas[i];
+		}
+	}
+
+	for (int i = 0; i &lt; n; ++i) {
+		book2[i] = lower_bound(ideas2, ideas2 + m, book[i]) - ideas2;
+	}
+
+	int curr = 0, start = 0, end = 0, res = INT_MAX;
+
+	while (end &lt; n) {
+		while (curr &lt; m &#38;&#38; end &lt; n) {
+			int idea = book2[end++];
+			if (idea_pagecounts[idea] == 0) {
+				++curr;
+			}
+			idea_pagecounts[idea]++;
+		}
+
+		while (curr &gt;= m &#38;&#38; start &lt; end) {
+			if (end - start &lt; res) {
+				res = end - start;
+			}
+			int idea = book2[start++];
+			if (--idea_pagecounts[idea] == 0) {
+				--curr;
+			}
+		}
+	}
+
+	return res;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d&#34;, &#38;n);
+	for (int i = 0; i &lt; n; ++i) {
+		scanf_s(&#34;%d&#34;, &#38;book[i]);
+	}
+	printf(&#34;%d\n&#34;, calc());
+    return 0;
+}</pre>
+</ul>
+</body></html>

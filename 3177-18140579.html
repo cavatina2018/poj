@@ -1,0 +1,154 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3177">3177</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 444K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;vector&gt;
+using namespace std;
+#define MAX_N	6000
+#define MAX_M	20000
+
+
+int n, m;
+pair&lt;int, int&gt; edges[MAX_M];
+vector&lt;int&gt; nodeedges[MAX_N];
+bool states[MAX_N];
+bool estates[MAX_M];
+int top[MAX_N];
+int stacks[MAX_N];
+int stackcount;
+bool valid[MAX_N];
+bool cstates[MAX_N];
+int childcount[MAX_N];
+
+
+int updatetop(int node)
+{
+	if (top[node] == node) {
+		return node;
+	}
+	top[node] = updatetop(top[node]);
+	return top[node];
+}
+
+
+void combine(int a, int b)
+{
+	updatetop(a);
+	updatetop(b);
+	if (top[a] != top[b]) {
+		top[b] = top[a];
+	}
+}
+
+
+void dfs(int node, int e)
+{
+	if (e != -1 &#38;&#38; estates[e]) return;
+
+	if (states[node]) {
+		int a = stacks[stackcount - 1];
+		updatetop(a);
+		updatetop(node);
+		if (top[a] == top[node]) {
+			return;
+		}
+
+		for (int i = stackcount - 1; i &gt;= 0; --i) {
+			if (stacks[i] == node) break;
+			combine(node, stacks[i]);
+		}
+		return;
+	}
+
+	if(e != -1) estates[e] = true;
+	states[node] = true;
+	stacks[stackcount++] = node;
+
+	for (size_t i = 0; i &lt; nodeedges[node].size(); ++i) {
+		int edge = nodeedges[node][i];
+		int next = edges[edge].first;
+		if (next == node) next = edges[edge].second;
+		dfs(next, edge);
+	}
+
+	if(e != -1) estates[e] = false;
+	stackcount--;
+}
+
+
+void dfs2(int node)
+{
+	states[node] = true;
+	cstates[top[node]] = true;
+
+	for (size_t i = 0; i &lt; nodeedges[node].size(); ++i) {
+		int edge = nodeedges[node][i];
+		int next = edges[edge].first;
+		if (next == node) next = edges[edge].second;
+		if (states[next]) continue;
+
+		if (top[next] != top[node] &#38;&#38; !cstates[top[next]]) {
+			childcount[top[node]]++;
+		}
+		dfs2(next);
+	}
+}
+
+
+int calc()
+{
+	for (int i = 1; i &lt;= n; ++i) {
+		top[i] = i;
+	}
+
+	dfs(1, -1);
+
+	for (int i = 1; i &lt;= n; ++i) {
+		updatetop(i);
+		valid[top[i]] = true;
+	}
+
+	memset(states, 0, sizeof(states));
+	dfs2(1);
+
+	int count = 0;
+	if (childcount[top[1]] != 0) {
+		for (int i = 1; i &lt;= n; ++i) {
+			if (!valid[i]) continue;
+			if (childcount[i] == 0) {
+				++count;
+			}
+		}
+		if (childcount[top[1]] == 1) {
+			++count;
+		}
+	}
+
+	return count % 2 == 0 ? (count / 2) : (count / 2 + 1);
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d&#34;, &#38;n, &#38;m);
+	for (int i = 0; i &lt; m; ++i) {
+		scanf_s(&#34;%d %d&#34;, &#38;edges[i].first, &#38;edges[i].second);
+		nodeedges[edges[i].first].push_back(i);
+		nodeedges[edges[i].second].push_back(i);
+	}
+	printf(&#34;%d\n&#34;, calc());
+    return 0;
+}</pre>
+</ul>
+</body></html>

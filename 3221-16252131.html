@@ -1,0 +1,142 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3221">3221</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 372K</td><td width=10px></td><td><b>Time:</b> 63MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;queue&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+
+map&lt;int, int&gt; results;
+queue&lt;int&gt; q;
+
+
+int getnum(int arr[7])
+{
+	int num = 0;
+	for (int i = 0; i &lt; 7; ++i)
+	{
+		num *= 10;
+		num += arr[i];
+	}
+	return num;
+}
+
+
+void permute(int num)
+{
+	int arr[7], zero = 0, n = num;
+
+	for (int i = 0; i &lt; 7; ++i)
+	{
+		arr[6 - i] = n % 10;
+		n /= 10;
+		if (arr[6 - i] == 0)
+		{
+			zero = 6 - i;
+		}
+	}
+
+	vector&lt;int&gt; neighbour;
+	if (zero == 0)
+	{
+		neighbour.push_back(2);
+		neighbour.push_back(4);
+		neighbour.push_back(6);
+	}
+	else if (zero == 1)
+	{
+		neighbour.push_back(2);
+		neighbour.push_back(6);
+	}
+	else if (zero == 2)
+	{
+		neighbour.push_back(0);
+		neighbour.push_back(1);
+		neighbour.push_back(3);
+	}
+	else if (zero == 3)
+	{
+		neighbour.push_back(2);
+		neighbour.push_back(4);
+	}
+	else if (zero == 4)
+	{
+		neighbour.push_back(0);
+		neighbour.push_back(3);
+		neighbour.push_back(5);
+	}
+	else if (zero == 5)
+	{
+		neighbour.push_back(4);
+		neighbour.push_back(6);
+	}
+	else
+	{
+		neighbour.push_back(0);
+		neighbour.push_back(1);
+		neighbour.push_back(5);
+	}
+
+	int count = results[num];
+	for (size_t i = 0; i &lt; neighbour.size(); ++i)
+	{
+		arr[zero] = arr[neighbour[i]];
+		arr[neighbour[i]] = 0;
+		n = getnum(arr);
+		arr[neighbour[i]] = arr[zero];
+		arr[zero] = 0;
+
+		if (results.find(n) == results.end())
+		{
+			results[n] = count + 1;
+			q.push(n);
+		}
+	}
+}
+
+
+void init()
+{
+	results[123456] = 0;	
+	q.push(123456);
+
+	while (!q.empty())
+	{
+		permute(q.front());
+		q.pop();
+	}
+}
+
+
+int main()
+{
+	init();
+	int t; cin &gt;&gt; t;
+	for (int i = 0; i &lt; t; ++i)
+	{
+		int n; cin &gt;&gt; n;
+		if (results.find(n) != results.end())
+		{
+			cout &lt;&lt; results[n] &lt;&lt; endl;
+		}
+		else
+		{
+			cout &lt;&lt; &#34;-1&#34; &lt;&lt; endl;
+		}
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

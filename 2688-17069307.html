@@ -1,0 +1,186 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2688">2688</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 228K</td><td width=10px></td><td><b>Time:</b> 157MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+#define MAX_L	20
+#define MAX_N	11
+
+
+int w, h;
+char room[MAX_L][MAX_L];
+int n;
+int x[MAX_N], y[MAX_N];
+int id[MAX_L][MAX_L];
+unsigned dist[MAX_N][MAX_N];
+int xstack[2][MAX_L * MAX_L], ystack[2][MAX_L * MAX_L];
+int stacklen[2];
+bool visited[MAX_L][MAX_L];
+bool states[MAX_N];
+int m;
+
+
+void add(int index, int&#38; count, int step, int curr, int _x, int _y)
+{
+	if (_x &lt; 0 || _x &gt;= w || _y &lt; 0 || _y &gt;= h)
+	{
+		return;
+	}
+	if (room[_y][_x] == &#39;x&#39; || visited[_y][_x])
+	{
+		return;
+	}
+
+	if (room[_y][_x] == &#39;o&#39; || room[_y][_x] == &#39;*&#39;)
+	{
+		int d = id[_y][_x];
+		if (d &gt; index)
+		{
+			dist[index][d] = dist[d][index] = step;
+			++count;
+		}
+	}
+
+	visited[_y][_x] = true;
+	xstack[curr][stacklen[curr]] = _x;
+	ystack[curr][stacklen[curr]] = _y;
+	stacklen[curr]++;
+}
+
+
+bool calcdist(int index)
+{
+	memset(visited, 0, sizeof(visited));
+	int prev = 0, curr = 1, count = 0;
+
+	xstack[prev][0] = x[index];
+	ystack[prev][0] = y[index];
+	stacklen[prev] = 1;
+	visited[y[index]][x[index]] = true;
+
+	for (int step = 1; count &lt; n - index - 1; ++step)
+	{
+		if (stacklen[prev] == 0)
+		{
+			break;
+		}
+		stacklen[curr] = 0;
+		for (int i = 0; i &lt; stacklen[prev] &#38;&#38; count &lt; n - index - 1; ++i)
+		{
+			add(index, count, step, curr, xstack[prev][i], ystack[prev][i] - 1);
+			add(index, count, step, curr, xstack[prev][i], ystack[prev][i] + 1);
+			add(index, count, step, curr, xstack[prev][i] - 1, ystack[prev][i]);
+			add(index, count, step, curr, xstack[prev][i] + 1, ystack[prev][i]);
+		}
+		curr = (curr + 1) % 2;
+		prev = (prev + 1) % 2;
+	}
+
+	return count &gt;= n - index - 1;
+}
+
+
+bool calcdist()
+{
+	for (int i = 0; i &lt; n; ++i)
+	{
+		if (!calcdist(i))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+
+void calc(int index, int count, int sum)
+{
+	if (sum &gt; m) return;
+
+	if (count == n - 1)
+	{
+		m = sum;
+		return;
+	}
+
+	states[index] = true;
+
+	for (int i = 0; i &lt; n; ++i)
+	{
+		if (!states[i])
+		{
+			calc(i, count + 1, sum + dist[index][i]);
+		}
+	}
+
+	states[index] = false;
+}
+
+
+int calc()
+{
+	m = 0x7fffffff;
+	memset(states, 0, sizeof(states));
+
+	calc(0, 0, 0);
+	return m;
+}
+
+
+int main()
+{
+	while (true)
+	{
+		cin &gt;&gt; w &gt;&gt; h;
+		if (!w &#38;&#38; !h) break;
+
+		memset(id, 0, sizeof(id));
+		memset(dist, 0, sizeof(dist));
+		n = 1;
+
+		for (int i = 0; i &lt; h; ++i)
+		{
+			string s; cin &gt;&gt; s;
+			for (int j = 0; j &lt; w; ++j)
+			{
+				room[i][j] = s[j];
+				if (s[j] == &#39;o&#39;)
+				{
+					x[0] = j;
+					y[0] = i;
+					id[i][j] = 0;
+				}
+				else if (s[j] == &#39;*&#39;)
+				{
+					x[n] = j;
+					y[n] = i;
+					id[i][j] = n++;
+				}
+			}
+		}
+
+		if (!calcdist())
+		{
+			cout &lt;&lt; -1 &lt;&lt; endl;
+		}
+		else
+		{
+			cout &lt;&lt; calc() &lt;&lt; endl;
+		}
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

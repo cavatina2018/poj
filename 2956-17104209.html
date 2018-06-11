@@ -1,0 +1,119 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2956">2956</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 448K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#define MAX_L	20
+
+
+bool states[MAX_L][1024][10];
+int results[MAX_L][1024][10];
+bool states2[MAX_L];
+int results2[MAX_L];
+
+
+int getcount(int len, int mask, int start)
+{
+	if (states[len][mask][start]) {
+		return results[len][mask][start];
+	}
+
+	int res = 0;
+
+	int bit = 1;
+	for (int i = 0; i &lt; start; ++i) {
+		bit &lt;&lt;= 1;
+	}
+
+	if (mask &#38; bit) {
+		res = 0;
+	}
+	else if (len == 1) {
+		res = 1;
+	}
+	else {
+		for (int i = 0; i &lt; 10; ++i) {
+			res += getcount(len - 1, mask | bit, i);
+		}
+	}
+
+	results[len][mask][start] = res;
+	states[len][mask][start] = true;
+	return res;
+}
+
+
+int getlencount(int len)
+{
+	if (states2[len]) return results2[len];
+
+	int res = 0;
+	for (int i = 1; i &lt; 10; ++i) {
+		res += getcount(len, 0, i);
+	}
+
+	results2[len] = res;
+	states2[len] = true;
+	return res;
+}
+
+
+int get(int len, int index)
+{
+	int res = 0, mask = 0, bit = 1, prev = 0;
+	bool first = true;
+
+	for (int i = len; i &gt;= 1; --i) {
+		bit = first ? 2 : 1;
+		for (int j = first ? 1 : 0; j &lt; 10; ++j, bit &lt;&lt;= 1) {
+			int count = getcount(i, mask, j);
+			if (index &lt; count) {
+				prev = j;
+				break;
+			}
+			index -= count;
+		}
+		res *= 10;
+		res += prev;
+		mask |= bit;
+		first = false;
+	}
+
+	return res;
+}
+
+
+int get(int index)
+{
+	for (int i = 1; i &lt; MAX_L; ++i) {
+		int count = getlencount(i);
+		if (index &lt; count) {
+			return get(i, index);
+		}
+		index -= count;
+	}
+	return 0;
+}
+
+
+int main()
+{
+	int n;
+	while (true) {
+		scanf_s(&#34;%d&#34;, &#38;n);
+		if (!n) break;
+		printf(&#34;%d\n&#34;, get(n - 1));
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

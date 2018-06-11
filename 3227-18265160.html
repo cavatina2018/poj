@@ -1,0 +1,74 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3227">3227</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 212K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	1000
+
+
+int n, h;
+int X[MAX_N];
+int Y[MAX_N];
+
+
+double getdist(double x1, double y1, double x2, double y2)
+{
+	return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
+
+
+double calc()
+{
+	if (n &lt;= 1) return 0.0;
+
+	double res = getdist(X[0], Y[0], X[1], Y[1]);
+	double x = X[1], y = Y[1];
+
+	for (int i = 2; i &lt; n; ++i) {
+		double t2 = (double)(Y[i] - h) / X[i];
+		double t1 = (double)(y - h) / x;
+		if (t2 &lt;= t1) continue;
+
+		double t3 = (double)(Y[i] - Y[i - 1]) / (X[i] - X[i - 1]);
+		double x1 = (double)(Y[i] - t3 * X[i] - h) / (t1 - t3);
+		double y1 = t1 * x1 + h;
+		res += getdist(x1, y1, X[i], Y[i]);
+
+		x = X[i], y = Y[i];
+	}
+
+	return res;
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d %d&#34;, &#38;n, &#38;h);
+		if (!n &#38;&#38; !h) break;
+
+		while (n &gt; MAX_N) printf(&#34;...&#34;);
+
+		for (int i = 0; i &lt; n; ++i) {
+			scanf_s(&#34;%d %d&#34;, &#38;X[i], &#38;Y[i]);
+		}
+
+		printf(&#34;%.2lf\n&#34;, calc());
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

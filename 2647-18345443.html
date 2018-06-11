@@ -1,0 +1,177 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2647">2647</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 20340K</td><td width=10px></td><td><b>Time:</b> 1110MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	25143
+#define MAX_M	(16 * 26)
+
+
+int n;
+char dict[MAX_N + 1][17];
+int ranks[MAX_N + 1];
+int edgecounts[MAX_N];
+int edges[MAX_N][MAX_M];
+char src[17];
+char dst[17];
+int s, e;
+bool states[MAX_N];
+int buffer[2][MAX_N];
+int buflen[2];
+int prevnodes[MAX_N];
+int results[MAX_N];
+int rescount;
+
+
+bool Less(int a, int b)
+{
+	return strcmp(dict[a], dict[b]) &lt; 0;
+}
+
+
+void printres()
+{
+	rescount = 0;
+
+	for (int i = e; i &gt;= 0; i = prevnodes[i]) {
+		results[rescount++] = i;
+	}
+
+	for (int i = rescount - 1; i &gt;= 0; --i) {
+		printf(&#34;%s\n&#34;, dict[ranks[results[i]]]);
+	}
+	printf(&#34;\n&#34;);
+}
+
+
+int locate(char s[])
+{
+	int i = 0;
+	for (; s[i]; ++i) {
+		dict[n][i] = s[i];
+	}
+	dict[n][i] = 0;
+	ranks[n] = n;
+
+	int pos = lower_bound(ranks, ranks + n, n, Less) - ranks;
+	if (pos &lt; n &#38;&#38; !strcmp(dict[n], s)) {
+		return pos;
+	}
+
+	while (true) printf(&#34;...&#34;);
+	return -1;
+}
+
+
+int calc()
+{
+	s = locate(src);
+	e = locate(dst);
+
+	memset(states, 0, sizeof(states));
+	states[s] = true;
+	buffer[0][0] = s;
+	buflen[0] = 1;
+	prevnodes[s] = -1;
+
+	int prev = 0, curr = 1;
+	for (int i = 1; ; ++i) {
+		if (buflen[prev] == 0) break;
+
+		buflen[curr] = 0;
+		for (int j = 0; j &lt; buflen[prev]; ++j) {
+			int node = buffer[prev][j];
+
+			for (int k = 0; k &lt; edgecounts[node]; ++k) {
+				int next = edges[node][k];
+				if (states[next]) continue;
+				
+				states[next] = true;
+				prevnodes[next] = node;
+				buffer[curr][buflen[curr]++] = next;
+				if (next == e) return i;
+			}
+		}
+
+		prev = (prev + 1) % 2;
+		curr = (curr + 1) % 2;
+	}
+
+	return -1;
+}
+
+
+void init(int idx)
+{
+	int i = 0;
+	for (; dict[ranks[idx]][i]; ++i) {
+		dict[n][i] = dict[ranks[idx]][i];
+	}
+	dict[n][i] = 0;
+	ranks[n] = n;
+
+	for (int j = 0; j &lt; i; ++j) {
+		for (char k = &#39;a&#39;; k &lt;= &#39;z&#39;; ++k) {
+			char s = dict[n][j];
+			dict[n][j] = k;
+
+			int pos = lower_bound(ranks, ranks + n, n, Less) - ranks;
+			if (pos &lt; n &#38;&#38; !strcmp(dict[n], dict[ranks[pos]]) &#38;&#38; pos != idx) {
+				edges[idx][edgecounts[idx]++] = pos;
+			}
+
+			dict[n][j] = s;
+		}
+	}
+}
+
+
+void init()
+{
+	for (int i = 0; i &lt; n; ++i) {
+		ranks[i] = i;
+	}
+	sort(ranks, ranks + n, Less);
+
+	for (int i = 0; i &lt; n; ++i) {
+		init(i);
+	}
+}
+
+
+int main()
+{
+	while (true) {
+		gets_s(dict[n], 17);
+		if (dict[n][0] == 0) break;
+		n++;
+	}
+	init();
+
+	while (scanf_s(&#34;%s %s&#34;, src, 17, dst, 17) &gt;= 2) {
+		int ret = calc();
+		if (ret &lt; 0) {
+			printf(&#34;No solution.\n\n&#34;);
+		}
+		else {
+			printres();
+		}
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

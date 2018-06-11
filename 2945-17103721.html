@@ -1,0 +1,100 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2945">2945</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 19264K</td><td width=10px></td><td><b>Time:</b> 4360MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	20000
+#define MAX_M	20
+
+
+int n, m;
+int results[MAX_N + 1];
+char dna[MAX_M + 1];
+
+
+struct Dir
+{
+	int count;
+	Dir* dirs[26];
+
+	Dir()
+	{
+		memset(dirs, 0, sizeof(dirs));
+		count = 0;
+	}
+
+	~Dir()
+	{
+		for (int i = 0; i &lt; 26; ++i)
+		{
+			if (dirs[i]) delete dirs[i];
+		}
+	}
+
+	void set(char* str)
+	{
+		if (!str[0])
+		{
+			count++;
+			return;
+		}
+
+		int c = str[0] - &#39;A&#39;;
+		if (!dirs[c]) dirs[c] = new Dir();
+		dirs[c]-&gt;set(str + 1);
+	}
+
+	void enumerate()
+	{
+		if (count &gt; 0)
+		{
+			results[count]++;
+			return;
+		}
+
+		for (int i = 0; i &lt; 26; ++i) {
+			if (dirs[i]) dirs[i]-&gt;enumerate();
+		}
+	}
+
+};
+
+
+Dir* dict;
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d %d&#34;, &#38;n, &#38;m);
+		if (!n &#38;&#38; !m) break;
+
+		dict = new Dir();
+		for (int i = 0; i &lt; n; ++i) {
+			scanf_s(&#34;%s&#34;, dna, sizeof(dna));
+			dict-&gt;set(dna);
+		}
+
+		memset(results, 0, sizeof(results));
+		dict-&gt;enumerate();
+
+		for (int i = 1; i &lt;= n; ++i) {
+			printf(&#34;%d\n&#34;, results[i]);
+		}
+		delete dict;
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

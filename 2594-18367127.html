@@ -1,0 +1,250 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2594">2594</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 7872K</td><td width=10px></td><td><b>Time:</b> 79MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	1000
+#define MAX_M	1000
+
+
+int N, M;
+vector&lt;int&gt; edges[MAX_N + 1];
+vector&lt;int&gt; edges2[MAX_N + 1];
+bool connected[MAX_N + 1][MAX_N + 1];
+bool connected2[MAX_N + 1][MAX_N + 1];
+bool states[MAX_N + 1];
+int n, m;
+int relations[MAX_N + MAX_M][MAX_N + MAX_M];
+int relcount[MAX_N + MAX_M];
+int type[MAX_N + MAX_M];
+int match[MAX_N + MAX_M];
+int path[MAX_N + MAX_M];
+int stack[MAX_N + MAX_M];
+
+
+bool findpath(int&#38; end)
+{
+	int stacklen = 0;
+	for (int i = 0; i &lt; n + m; ++i)
+	{
+		if (type[i] == 0 &#38;&#38; match[i] &lt; 0)
+		{
+			stack[stacklen++] = i;
+		}
+	}
+
+	memset(path, 0xff, sizeof(path));
+
+	while (stacklen &gt; 0)
+	{
+		int start = stack[--stacklen];
+
+		for (int i = 0; i &lt; relcount[start]; ++i)
+		{
+			end = relations[start][i];
+			if (end == match[start]) continue;
+			if (match[end] &lt; 0)
+			{
+				path[end] = start;
+				return true;
+			}
+			if (path[end] &lt; 0)
+			{
+				path[end] = start;
+				path[match[end]] = end;
+				stack[stacklen++] = match[end];
+			}
+		}
+	}
+
+	return false;
+}
+
+
+int maxmatch()
+{
+	int res = 0, end = 0;
+	if (n == 0 || m == 0)
+	{
+		return res;
+	}
+
+	memset(match, 0xff, sizeof(match));
+
+	while (findpath(end))
+	{
+		while (true)
+		{
+			int prev = path[end];
+			match[prev] = end;
+			match[end] = prev;
+
+			if (path[prev] &lt; 0) break;
+			end = path[prev];
+		}
+		++res;
+	}
+
+	return res;
+}
+
+
+int calc()
+{
+	return n - maxmatch();
+}
+
+
+void cleanup()
+{
+	for (int i = 1; i &lt;= N; ++i) {
+		edges[i].clear();
+		edges2[i].clear();
+	}
+	memset(connected, 0, sizeof(connected));
+	memset(connected2, 0, sizeof(connected2));
+}
+
+
+void dfs(int node, int start)
+{
+	states[node] = true;
+	if (start != node) {
+		connected[start][node] = true;
+		edges2[start].push_back(node);
+	}
+
+	for (size_t i = 0; i &lt; edges[node].size(); ++i) {
+		int next = edges[node][i];
+		if (states[next]) continue;
+		dfs(next, start);
+	}
+}
+
+
+void init()
+{
+	for (int i = 1; i &lt;= N; ++i) {
+		memset(states, 0, sizeof(states));
+		dfs(i, i);
+	}
+
+	memset(relcount, 0, sizeof(relcount));
+	n = N, m = M;
+
+	for (int i = 0; i &lt; n; ++i)
+	{
+		type[i] = 0;
+		
+		for (int j = 0; j &lt; (int)edges2[i + 1].size(); ++j)
+		{
+			int fid = edges2[i + 1][j] - 1;
+			fid += n;
+			relations[i][relcount[i]++] = fid;
+			relations[fid][relcount[fid]++] = i;
+			type[fid] = 1;
+		}
+	}
+}
+
+
+int calc2()
+{
+	int res = INT_MAX;
+
+	int perm[MAX_N];
+	for (int i = 0; i &lt; N; ++i) {
+		perm[i] = i + 1;
+	}
+
+	do {
+		int ret = 1;
+		int prev = perm[0];
+		for (int i = 1; i &lt; N; ++i) {
+			int curr = perm[i];
+			if (!connected[prev][curr]) {
+				prev = curr;
+				++ret;
+			}
+			else {
+				prev = curr;
+			}
+		}
+		if (ret &lt; res) res = ret;
+	} while (next_permutation(perm, perm + N));
+
+	return res;
+}
+
+
+void test()
+{
+	for (int i = 0; i &lt; 100; ++i) {
+		N = MAX_N, M = 6 * MAX_N;
+		for (int j = 0; j &lt; M; ++j) {
+			int a = rand() % N + 1;
+			int b = rand() % N + 1;
+			if (a == b) {
+				if (a &gt; 1) {
+					a--;
+				}
+				else {
+					b++;
+				}
+			}
+			else if (a &gt; b) {
+				int c = a;
+				a = b;
+				b = c;
+			}
+			if (!connected2[a][b]) {
+				edges[a].push_back(b);
+				connected2[a][b] = true;
+			}
+		}
+
+		init();
+		int ret1 = calc();
+		int ret2 = ret1;// calc2();
+		printf(&#34;ret1=%d, ret2=%d\n&#34;, ret1, ret2);
+		if (ret1 != ret2) {
+			printf(&#34;test failed\n&#34;);
+			getchar();
+		}
+		cleanup();
+	}
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d %d&#34;, &#38;N, &#38;M);
+		if (!N &#38;&#38; !M) break;
+
+		for (int i = 0; i &lt; M; ++i) {
+			int a, b; scanf_s(&#34;%d %d&#34;, &#38;a, &#38;b);
+			edges[a].push_back(b);
+		}
+
+		init();
+		printf(&#34;%d\n&#34;, calc());
+		cleanup();
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

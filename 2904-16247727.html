@@ -1,0 +1,94 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2904">2904</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 612K</td><td width=10px></td><td><b>Time:</b> 110MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#define SCANF	scanf
+#define MAX_K	10
+#define MAX_M	100
+
+
+int res[MAX_K + 1][MAX_M + 1][MAX_M + 1];
+bool state[MAX_K + 1][MAX_M + 1][MAX_M + 1];
+
+
+void init(int k, int m)
+{
+	for (int i = 1; i &lt;= k; ++i)
+	{
+		for (int j = 1; j &lt;= m; ++j)
+		{
+			for (int l = 1; l &lt;= m; ++l)
+			{
+				state[i][j][l] = false;
+			}
+		}
+	}
+}
+
+
+int calc(int k, int m, int n)
+{
+	if (k == 1)
+	{
+		int sum = 0;
+		for (int i = m; i &lt;= n; ++i)
+		{
+			sum += i;
+		}
+		return sum;
+	}
+	if (m == n)
+	{
+		return m;
+	}
+	if (m &gt; n)
+	{
+		return 0;
+	}
+	if (state[k][m][n])
+	{
+		return res[k][m][n];
+	}
+
+	int r = 0x7fffffff;
+
+	for (int p = m; p &lt;= n; ++p)
+	{
+		int r1 = calc(k - 1, m, p - 1) + p;
+		int r2 = calc(k, p + 1, n) + p;
+		int r3 = r1 &gt; r2 ? r1 : r2;
+		if (r3 &lt; r)
+		{
+			r = r3;
+		}
+	}
+
+	res[k][m][n] = r;
+	state[k][m][n] = true;
+	return r;
+}
+
+
+int main()
+{
+	int n; SCANF(&#34;%d&#34;, &#38;n);
+	for (int i = 0; i &lt; n; ++i)
+	{
+		int k, m; SCANF(&#34;%d %d&#34;, &#38;k, &#38;m);
+		init(k, m);
+		printf(&#34;%d\n&#34;, calc(k, 1, m));
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

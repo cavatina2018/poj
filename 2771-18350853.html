@@ -1,0 +1,161 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2771">2771</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 2312K</td><td width=10px></td><td><b>Time:</b> 297MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;cstring&gt;
+using namespace std;
+#define MAX_N	500
+#define MAX_M	500
+
+
+int N;
+int heights[MAX_N];
+string sex[MAX_N];
+string music[MAX_N];
+string sport[MAX_N];
+int n, m;
+int boys[MAX_N];
+int girls[MAX_N];
+int relations[MAX_N + MAX_M][MAX_N + MAX_M];
+int relcount[MAX_N + MAX_M];
+int type[MAX_N + MAX_M];
+int match[MAX_N + MAX_M];
+int path[MAX_N + MAX_M];
+int stack[MAX_N + MAX_M];
+
+
+bool findpath(int&#38; end)
+{
+	int stacklen = 0;
+	for (int i = 0; i &lt; n + m; ++i)
+	{
+		if (type[i] == 0 &#38;&#38; match[i] &lt; 0)
+		{
+			stack[stacklen++] = i;
+		}
+	}
+
+	memset(path, 0xff, sizeof(path));
+
+	while (stacklen &gt; 0)
+	{
+		int start = stack[--stacklen];
+
+		for (int i = 0; i &lt; relcount[start]; ++i)
+		{
+			end = relations[start][i];
+			if (end == match[start]) continue;
+			if (match[end] &lt; 0)
+			{
+				path[end] = start;
+				return true;
+			}
+			if (path[end] &lt; 0)
+			{
+				path[end] = start;
+				path[match[end]] = end;
+				stack[stacklen++] = match[end];
+			}
+		}
+	}
+
+	return false;
+}
+
+
+int maxmatch()
+{
+	int res = 0, end = 0;
+	if (n == 0 || m == 0)
+	{
+		return res;
+	}
+
+	memset(match, 0xff, sizeof(match));
+
+	while (findpath(end))
+	{
+		while (true)
+		{
+			int prev = path[end];
+			match[prev] = end;
+			match[end] = prev;
+
+			if (path[prev] &lt; 0) break;
+			end = path[prev];
+		}
+		++res;
+	}
+
+	return res;
+}
+
+
+int calc()
+{
+	n = m = 0;
+	for (int i = 0; i &lt; N; ++i) {
+		if (sex[i] == &#34;M&#34;) {
+			boys[n++] = i;
+		}
+		else {
+			girls[m++] = i;
+		}
+	}
+
+	memset(relcount, 0, sizeof(relcount));
+
+	for (int i = 0; i &lt; n; ++i) {
+		type[i] = 0;
+
+		for (int j = 0; j &lt; m; ++j)
+		{
+			int	fid = j + n;
+			type[fid] = 1;
+
+			int b = boys[i], g = girls[j];
+			if (abs(heights[b] - heights[g]) &lt;= 40 &#38;&#38;
+				music[b] == music[g] &#38;&#38;
+				sport[b] != sport[g]) {
+				relations[i][relcount[i]++] = fid;
+				relations[fid][relcount[fid]++] = i;
+			}
+		}
+	}
+
+	return N - maxmatch();
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		cin &gt;&gt; N;
+		while (N &lt; 1 || N &gt; MAX_N) printf(&#34;...&#34;);
+
+		for (int j = 0; j &lt; N; ++j) {
+			cin &gt;&gt; heights[j];
+			cin &gt;&gt; sex[j];
+			cin &gt;&gt; music[j];
+			cin &gt;&gt; sport[j];
+		}
+		cout &lt;&lt; calc() &lt;&lt; endl;
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

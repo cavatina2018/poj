@@ -1,0 +1,78 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2954">2954</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 156K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+
+
+int X[3], Y[3];
+
+
+double S()
+{
+	double a = sqrt((double)(X[0] - X[1]) * (X[0] - X[1]) + (Y[0] - Y[1]) * (Y[0] - Y[1]));
+	double b = sqrt((double)(X[0] - X[2]) * (X[0] - X[2]) + (Y[0] - Y[2]) * (Y[0] - Y[2]));
+	double c = sqrt((double)(X[2] - X[1]) * (X[2] - X[1]) + (Y[2] - Y[1]) * (Y[2] - Y[1]));
+	double d = (a + b + c) / 2;
+	double s = sqrt(d * (d - a) * (d - b) * (d - c));
+	return s;
+}
+
+
+int gcd(int m, int n)
+{
+	if (m &gt; n) {
+		if (m % n == 0) return n;
+		return gcd(n, m % n);
+	}
+	else {
+		if (n % m == 0) return m;
+		return gcd(m, n % m);
+	}
+}
+
+
+int calc(int dx, int dy)
+{
+	if (dx == 0) return abs(dy) - 1;
+	if (dy == 0) return abs(dx) - 1;
+	return gcd(abs(dx), abs(dy)) - 1;
+}
+
+
+int calc()
+{
+	double edgepoints = 3;
+	edgepoints += calc(X[0] - X[1], Y[0] - Y[1]);
+	edgepoints += calc(X[0] - X[2], Y[0] - Y[2]);
+	edgepoints += calc(X[2] - X[1], Y[2] - Y[1]);
+
+	double s = S();
+
+	return (int)(s + 1 - edgepoints / 2 + 0.5);
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d %d %d %d %d %d&#34;, &#38;X[0], &#38;Y[0], &#38;X[1], &#38;Y[1], &#38;X[2], &#38;Y[2]);
+		if (X[0] == 0 &#38;&#38; Y[0] == 0 &#38;&#38; X[1] == 0 &#38;&#38; Y[1] == 0 &#38;&#38; X[2] == 0 &#38;&#38; Y[2] == 0) {
+			break;
+		}
+		printf(&#34;%d\n&#34;, calc());
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

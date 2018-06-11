@@ -1,0 +1,46 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2583">2583</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 232K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+using namespace std;
+
+
+void calc(int x, int y, int z)
+{
+	int c = x;
+	int a = ((z - x) - 2 * (y - x)) / 2;
+	int b = y - x - a;
+
+	x = a * 9 + b * 3 + c;
+	y = a * 16 + b * 4 + c;
+	z = a * 25 + b * 5 + c;
+	cout &lt;&lt; x &lt;&lt; &#34; &#34; &lt;&lt; y &lt;&lt; &#34; &#34; &lt;&lt; z &lt;&lt; endl;
+}
+
+
+int main()
+{
+	while (true)
+	{
+		int x, y, z;
+		if (!(cin &gt;&gt; x &gt;&gt; y &gt;&gt; z))
+		{
+			break;
+		}
+		calc(x, y, z);
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

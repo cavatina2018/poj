@@ -1,0 +1,219 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3083">3083</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 208K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	100
+
+
+int r, c;
+bool grid[MAX_N][MAX_N];
+int start_x;
+int start_y;
+int end_x;
+int end_y;
+bool states[MAX_N][MAX_N];
+int buf_x[2][MAX_N * MAX_N];
+int buf_y[2][MAX_N * MAX_N];
+int buflen[2];
+
+
+bool add(int next, int x, int y)
+{
+	if (x &lt; 0 || x &gt;= r || y &lt; 0 || y &gt;= c || states[x][y] || !grid[x][y]) {
+		return false;
+	}
+
+	states[x][y] = true;
+	buf_x[next][buflen[next]] = x;
+	buf_y[next][buflen[next]] = y;
+	buflen[next]++;
+
+	return x == end_x &#38;&#38; y == end_y;
+}
+
+
+int bfs()
+{
+	if (start_x == end_x &#38;&#38; start_y == end_y) {
+		return 0;
+	}
+
+	memset(states, 0, sizeof(states));
+	states[start_x][start_y] = true;
+	buf_x[0][0] = start_x;
+	buf_y[0][0] = start_y;
+	buflen[0] = 1;
+
+	int prev = 0, next = 1;
+	for (int step = 1; ; ++step) {
+		if (!buflen[prev]) break;
+		buflen[next] = 0;
+
+		for (int i = 0; i &lt; buflen[prev]; ++i) {
+			int x = buf_x[prev][i], y = buf_y[prev][i];
+			
+			if (add(next, x - 1, y) ||
+				add(next, x + 1, y) ||
+				add(next, x, y - 1) ||
+				add(next, x, y + 1)) {
+				return step;
+			}
+		}
+
+		prev = (prev + 1) % 2;
+		next = (next + 1) % 2;
+	}
+
+	return -1;
+}
+
+
+
+int left(int x, int y, int dir)
+{
+	if (x == end_x &#38;&#38; y == end_y) {
+		return 0;
+	}
+	while (x &lt;= 0 || x &gt;= r - 1 || y &lt;= 0 || y &gt;= c - 1) printf(&#34;...&#34;);
+	
+	int newdir = (dir + 3) % 4;
+
+	for (int i = 0; i &lt; 4; ++i) {
+		int newx = x, newy = y;
+		if (newdir == 0) {
+			newx--;
+		}
+		else if (newdir == 2) {
+			newx++;
+		}
+		else if (newdir == 1) {
+			newy++;
+		}
+		else {
+			newy--;
+		}
+		if (grid[newx][newy]) {
+			return 1 + left(newx, newy, newdir);
+		}
+		newdir = (newdir + 1) % 4;
+	}
+
+	return 0;
+}
+
+
+int right(int x, int y, int dir)
+{
+	if (x == end_x &#38;&#38; y == end_y) {
+		return 0;
+	}
+	while (x &lt;= 0 || x &gt;= r - 1 || y &lt;= 0 || y &gt;= c - 1) printf(&#34;...&#34;);
+
+	int newdir = (dir + 1) % 4;
+
+	for (int i = 0; i &lt; 4; ++i) {
+		int newx = x, newy = y;
+		if (newdir == 0) {
+			newx--;
+		}
+		else if (newdir == 2) {
+			newx++;
+		}
+		else if (newdir == 1) {
+			newy++;
+		}
+		else {
+			newy--;
+		}
+		if (grid[newx][newy]) {
+			return 1 + right(newx, newy, newdir);
+		}
+		newdir = (newdir + 3) % 4;
+	}
+
+	return 0;
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		scanf_s(&#34;%d %d&#34;, &#38;c, &#38;r);
+		for (int j = 0; j &lt; r; ++j) {
+			char buf[MAX_N]; scanf_s(&#34;%s&#34;, buf, MAX_N);
+			for (int k = 0; k &lt; c; ++k) {
+				grid[j][k] = buf[k] != &#39;#&#39;;
+				if (buf[k] == &#39;S&#39;) {
+					start_x = j;
+					start_y = k;
+				}
+				if (buf[k] == &#39;E&#39;) {
+					end_x = j;
+					end_y = k;
+				}
+			}
+		}
+
+		while (start_x == 0 &#38;&#38; start_y == 0 ||
+			start_x == 0 &#38;&#38; start_y == c - 1 ||
+			start_x == r - 1 &#38;&#38; start_y == 0 ||
+			start_x == r - 1 &#38;&#38; start_y == c - 1) {
+			printf(&#34;...&#34;);
+		}
+		while (end_x == 0 &#38;&#38; end_y == 0 ||
+			end_x == 0 &#38;&#38; end_y == c - 1 ||
+			end_x == r - 1 &#38;&#38; end_y == 0 ||
+			end_x == r - 1 &#38;&#38; end_y == c - 1) {
+			printf(&#34;...&#34;);
+		}
+
+		int ret1 = 0;
+		if (start_x == 0) {
+			ret1 = 2 + left(start_x + 1, start_y, 2);
+		}
+		else if (start_x == r - 1) {
+			ret1 = 2 + left(start_x - 1, start_y, 0);
+		}
+		else if (start_y == 0) {
+			ret1 = 2 + left(start_x, start_y + 1, 1);
+		}
+		else {
+			ret1 = 2 + left(start_x, start_y - 1, 3);
+		}
+
+		int ret2 = 0;
+		if (start_x == 0) {
+			ret2 = 2 + right(start_x + 1, start_y, 2);
+		}
+		else if (start_x == r - 1) {
+			ret2 = 2 + right(start_x - 1, start_y, 0);
+		}
+		else if (start_y == 0) {
+			ret2 = 2 + right(start_x, start_y + 1, 1);
+		}
+		else {
+			ret2 = 2 + right(start_x, start_y - 1, 3);
+		}
+
+		int ret3 = bfs();
+		while (bfs &lt; 0) printf(&#34;...&#34;);
+		ret3++;
+
+		printf(&#34;%d %d %d\n&#34;, ret1, ret2, ret3);
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

@@ -1,0 +1,71 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3051">3051</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 444K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+#define MAX_W	80
+#define MAX_H	1000
+int w, h;
+bool fields[MAX_H][MAX_W];
+bool states[MAX_H][MAX_W];
+
+
+int dfs(int i, int j)
+{
+	if (i &lt; 0 || i &gt;= h || j &lt; 0 || j &gt;= w || !fields[i][j] || states[i][j]) {
+		return 0;
+	}
+	
+	states[i][j] = true;
+
+	int ret = 1;
+	ret += dfs(i - 1, j);
+	ret += dfs(i, j - 1);
+	ret += dfs(i, j + 1);
+	ret += dfs(i + 1, j);
+
+	return ret;
+}
+
+
+int calc()
+{
+	int m = 0;
+	for (int i = 0; i &lt; h; ++i)	{
+		for (int j = 0; j &lt; w; ++j)	{
+			if (fields[i][j] &#38;&#38; !states[i][j]) {
+				int ret = dfs(i, j);
+				if (ret &gt; m) m = ret;
+			}
+		}
+	}
+	return m;
+}
+
+
+int main()
+{
+	cin &gt;&gt; w &gt;&gt; h;
+	for (int i = 0; i &lt; h; ++i){
+		string s; cin &gt;&gt; s;
+		for (int j = 0; j &lt; w; ++j){
+			fields[i][j] = s[j] == &#39;*&#39;;
+		}
+	}
+	cout &lt;&lt; calc() &lt;&lt; endl;
+	return 0;
+}</pre>
+</ul>
+</body></html>

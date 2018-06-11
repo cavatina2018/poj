@@ -1,0 +1,114 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3286">3286</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 216K</td><td width=10px></td><td><b>Time:</b> 250MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+using namespace std;
+#define MAX_N	15
+
+
+bool states[MAX_N][10];
+long long results[MAX_N][10];
+
+
+long long calc(int len, int start)
+{
+	if (len == 0 || start == 0) return 0;
+	if (states[len][start]) return results[len][start];
+
+	long long res = calc(len, start - 1) + calc(len - 1, 10);
+	if (start == 1) {
+		long long m = 1;
+		for (int i = 1; i &lt; len; ++i) {
+			m *= 10;
+		}
+		res += m;
+	}
+
+	results[len][start] = res;
+	states[len][start] = true;
+	return res;
+}
+
+
+long long calc1(long long n)
+{
+	int len = 0;
+	long long mask = 1;
+	for (long long i = n; i &gt; 0; i /= 10) {
+		mask *= 10;
+		++len;
+	}
+
+	if (n == mask - 1) {
+		return calc(len, 10);
+	}
+	mask /= 10;
+
+	int start = (int)(n / mask);
+	long long res = calc(len, start);
+	long long left = n - start * mask;
+
+	if (left == 0) {
+		res += len - 1;
+	}
+	else {
+		int leftlen = 0;
+		for (long long i = left; i &gt; 0; i /= 10) {
+			++leftlen;
+		}
+		res += calc1(left);
+		res += (len - 1 - leftlen) * (left + 1);
+	}
+	return res;
+}
+
+
+long long calc2(long long n)
+{
+	if (n &lt; 10)
+	{
+		return 1;
+	}
+
+	int len = 0;
+	long long mask = 1;
+	for (long long i = n; i &gt; 0; i /= 10) {
+		mask *= 10;
+		++len;
+	}
+	mask /= 10;
+
+	long long res = calc1(n) - calc(len, 1) + calc2(mask - 1);
+	return res;
+}
+
+
+int main()
+{
+	while (true) {
+		long long a, b; cin &gt;&gt; a &gt;&gt; b;
+		if (a &lt; 0 &#38;&#38; b &lt; 0) break;
+
+		if (a == 0) {
+			cout &lt;&lt; calc2(b) &lt;&lt; endl;
+		}
+		else
+		{
+			cout &lt;&lt; calc2(b) - calc2(a - 1) &lt;&lt; endl;
+		}
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

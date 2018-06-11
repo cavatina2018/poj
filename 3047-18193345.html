@@ -1,0 +1,105 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3047">3047</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 132K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;time.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+
+
+int y, m, d;
+int week;
+
+
+const char* getweek(int d)
+{
+	switch (d) {
+	case 0: return &#34;sunday&#34;;
+	case 1: return  &#34;monday&#34;;
+	case 2: return &#34;tuesday&#34;;
+	case 3: return  &#34;wednesday&#34;;
+	case 4: return &#34;thursday&#34;;
+	case 5: return  &#34;friday&#34;;
+	default: return &#34;saturday&#34;;
+	}
+}
+
+
+bool isleapyear(int y)
+{
+	if (y % 100) {
+		return y % 4 == 0;
+	}
+	else {
+		return y % 400 == 0;
+	}
+}
+
+
+int months[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+
+void init()
+{
+	int count = 0;
+
+	for (int year = 1900; year &gt; 1800; --year) {
+		bool leap = isleapyear(year - 1);
+		count += leap ? 366 : 365;
+	}
+
+	week = (7 + 1 - count % 7) % 7;
+}
+
+
+int calc()
+{
+	int count = 0;
+	for (int year = 1800; year &lt;= y; ++year) {
+		bool leap = isleapyear(year);
+		if (year == y) {
+			for (int month = 1; month &lt;= m; ++month) {
+				if (month == m) {
+					count += d - 1;
+					return count;
+				}
+				
+				int count2 = months[month];
+				if (month == 2 &#38;&#38; leap) {
+					count2 = 29;
+				}
+				count += count2;
+			}
+		}
+		count += leap ? 366 : 365;
+	}
+	return 0;
+}
+
+
+int main()
+{
+	init();
+
+	scanf_s(&#34;%d %d %d&#34;, &#38;y, &#38;m, &#38;d);
+	while (y &lt; 1800 || y &gt; 9999) printf(&#34;...&#34;);
+
+	int count = calc();
+	printf(&#34;%s\n&#34;, getweek((week + count) % 7));
+	return 0;
+}
+
+
+
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,59 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2624">2624</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 148K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+
+
+double X[4];
+double Y[4];
+
+
+bool Equal(double a, double b)
+{
+	return a &gt; b - 0.000001 &#38;&#38; a &lt; b + 0.000001;
+}
+
+
+int find()
+{
+	for (int i = 0; i &lt; 3; ++i) {
+		for (int j = i + 1; j &lt; 4; ++j) {
+			if (Equal(X[i], X[j]) &#38;&#38; Equal(Y[i], Y[j])) {
+				return i;
+			}
+		}
+	}
+	return 0;
+}
+
+
+int main()
+{
+	while (scanf_s(&#34;%lf %lf %lf %lf %lf %lf %lf %lf&#34;, &#38;X[0], &#38;Y[0], &#38;X[1], &#38;Y[1], &#38;X[2], &#38;Y[2], &#38;X[3], &#38;Y[3]) &gt;= 8) {
+		int idx = find();
+		double x = 0.0, y = 0.0;
+		for (int i = 0; i &lt; 4; ++i) {
+			if (Equal(X[i], X[idx]) &#38;&#38; Equal(Y[i], Y[idx])) {
+				continue;
+			}
+			x += X[i];
+			y += Y[i];
+		}
+		x -= X[idx];
+		y -= Y[idx];
+		printf(&#34;%.3lf %.3lf\n&#34;, x, y);
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

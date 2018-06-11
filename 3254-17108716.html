@@ -1,0 +1,115 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3254">3254</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 220K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MASK	100000000
+#define MAX_L	12
+
+int r, c;
+int rect[MAX_L][MAX_L];
+bool states[MAX_L][4096];
+long long results[MAX_L][4096];
+
+
+int getkey(int index)
+{
+	int key = 0;
+	for (int i = 0; i &lt; r; ++i)
+	{
+		key &lt;&lt;= 1;
+		if (rect[i][index])
+		{
+			key |= 1;
+		}
+	}
+	return key;
+}
+
+
+long long calc(int index);
+void calc(int index, int row, long long&#38; res)
+{
+	if (row &gt;= r)
+	{
+		res += calc(index + 1);
+		res %= MASK;
+		return;
+	}
+
+	if (!rect[row][index])
+	{
+		return calc(index, row + 1, res);
+	}
+
+	int flag1 = rect[row + 1][index];
+	int flag2 = index &lt; c - 1 &#38;&#38; rect[row][index + 1];
+
+	if (flag1) {
+		rect[row + 1][index] = 0;
+	}
+	if (flag2) {
+		rect[row][index + 1] = 0;
+	}
+
+	calc(index, row + 1, res);
+
+	if (flag1) {
+		rect[row + 1][index] = 1;
+	}
+	if (flag2) {
+		rect[row][index + 1] = 1;
+	}
+
+	calc(index, row + 1, res);
+}
+
+
+long long calc(int index)
+{
+	if (index &gt;= c) return 1;
+
+	int key = getkey(index);
+	if (states[index][key])
+	{
+		return results[index][key];
+	}
+
+	long long res = 0;
+	calc(index, 0, res);
+	res %= MASK;
+
+	states[index][key] = true;
+	results[index][key] = res;
+	return res;
+}
+
+
+int main()
+{
+	{
+		scanf_s(&#34;%d %d&#34;, &#38;r, &#38;c);
+		memset(rect, 0, sizeof(rect));
+		memset(states, 0, sizeof(states));
+
+		for (int i = 0; i &lt; r; ++i) {
+			for (int j = 0; j &lt; c; ++j) {
+				scanf_s(&#34;%d&#34;, &#38;rect[i][j]);
+			}
+		}
+		printf(&#34;%lld\n&#34;, calc(0));
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

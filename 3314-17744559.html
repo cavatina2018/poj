@@ -1,0 +1,112 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3314">3314</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 204K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_W	10
+#define MAX_H	10
+
+
+int n, w, b, h;
+bool plaque[MAX_H][MAX_W];
+int ptop[MAX_W];
+int pbottom[MAX_W];
+int box[MAX_W];
+int boxtop;
+
+
+void add()
+{
+	int d = INT_MAX;
+	for (int i = 0; i &lt; w; ++i) {
+		if (pbottom[i] - box[i] &lt; d) {
+			d = pbottom[i] - box[i];
+		}
+	}
+
+	bool flag = false;
+	int newbox[MAX_W];
+	for (int i = 0; i &lt; w; ++i) {
+		newbox[i] = ptop[i] - d;
+		if (newbox[i] &gt; b) {
+			flag = true;
+			break;
+		}
+	}
+
+	if (flag) {
+		printf(&#34;%d &#34;, boxtop);
+
+		boxtop = 0;
+		for (int i = 0; i &lt; w; ++i) {
+			box[i] = ptop[i];
+			if (box[i] &gt; boxtop) {
+				boxtop = box[i];
+			}
+		}
+	}
+	else {
+		for (int i = 0; i &lt; w; ++i) {
+			box[i] = newbox[i];
+			if (box[i] &gt; boxtop) {
+				boxtop = box[i];
+			}
+		}
+	}
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d %d %d&#34;, &#38;n, &#38;w, &#38;b);
+		if (!n &#38;&#38; !w &#38;&#38; !b) break;
+
+		memset(box, 0, sizeof(box));
+		boxtop = 0;
+
+		for (int i = 0; i &lt; n; ++i) {
+			fill(ptop, ptop + w, 0);
+			fill(pbottom, pbottom + w, INT_MAX);
+
+			scanf_s(&#34;%d&#34;, &#38;h);
+			for (int j = 0; j &lt; h; ++j) {
+				char buf[MAX_W + 1];
+				scanf_s(&#34;%s&#34;, buf, sizeof(buf));
+
+				int l = h - 1 - j;
+				for (int k = 0; k &lt; w; ++k) {
+					plaque[l][k] = buf[k] == &#39;X&#39;;
+					if (plaque[l][k]) {
+						if (l + 1 &gt; ptop[k]) {
+							ptop[k] = l + 1;
+						}
+						if (l &lt; pbottom[k]) {
+							pbottom[k] = l;
+						}
+					}
+				}
+			}
+
+			add();
+		}
+
+		printf(&#34;%d\n&#34;, boxtop);
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

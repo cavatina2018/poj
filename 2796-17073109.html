@@ -1,0 +1,244 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2796">2796</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 9576K</td><td width=10px></td><td><b>Time:</b> 2235MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	100000
+
+
+int n;
+int values[MAX_N];
+int index[MAX_N];
+int left[MAX_N], right[MAX_N];
+long long leftsums[MAX_N], rightsums[MAX_N];
+long long res = -1;
+int res_start;
+int res_end;
+
+
+struct TreeNode
+{
+	static TreeNode* buffer[32];
+
+	int level;
+	int count;
+	int start;
+	int len;
+	int minvalue;
+	int maxvalue;
+	TreeNode* left;
+	TreeNode* right;
+
+	static TreeNode* CreateTreeNode(int level, int count, int s, int l)
+	{
+		TreeNode* node = buffer[level] + (s / l);
+		node-&gt;level = level;
+		node-&gt;count = count;
+		node-&gt;start = s;
+		node-&gt;len = l;
+		node-&gt;maxvalue = (int)0x80000000;
+		node-&gt;minvalue = 0x7fffffff;
+		node-&gt;left = node-&gt;right = NULL;
+		return node;
+	}
+
+	void add(int value)
+	{
+		if (value &gt; maxvalue) maxvalue = value;
+		if (value &lt; minvalue) minvalue = value;
+
+		if (len &gt; 1)
+		{
+			int len2 = len / 2;
+
+			if (value &lt; start + len2)
+			{
+				if (!left) left = CreateTreeNode(level + 1, count * 2, start, len2);
+				left-&gt;add(value);
+			}
+			else
+			{
+				if (!right) right = CreateTreeNode(level + 1, count * 2, start + len2, len2);
+				right-&gt;add(value);
+			}
+		}
+	}
+
+	void get(int value, int&#38;l, int&#38; r)
+	{
+		if (len == 1) return;
+
+		int len2 = len / 2;
+		if (value &lt; start + len2)
+		{
+			if (right) r = right-&gt;minvalue;
+			if (left)
+			{
+				left-&gt;get(value, l, r);
+			}
+		}
+		else
+		{
+			if (left) l = left-&gt;maxvalue;
+			if (right)
+			{
+				right-&gt;get(value, l, r);
+			}
+		}
+	}
+};
+
+
+TreeNode buf0[1 &lt;&lt; 0];
+TreeNode buf1[1 &lt;&lt; 1];
+TreeNode buf2[1 &lt;&lt; 2];
+TreeNode buf3[1 &lt;&lt; 3];
+TreeNode buf4[1 &lt;&lt; 4];
+TreeNode buf5[1 &lt;&lt; 5];
+TreeNode buf6[1 &lt;&lt; 6];
+TreeNode buf7[1 &lt;&lt; 7];
+TreeNode buf8[1 &lt;&lt; 8];
+TreeNode buf9[1 &lt;&lt; 9];
+TreeNode buf10[1 &lt;&lt; 10];
+TreeNode buf11[1 &lt;&lt; 11];
+TreeNode buf12[1 &lt;&lt; 12];
+TreeNode buf13[1 &lt;&lt; 13];
+TreeNode buf14[1 &lt;&lt; 14];
+TreeNode buf15[1 &lt;&lt; 15];
+TreeNode buf16[1 &lt;&lt; 16];
+TreeNode buf17[1 &lt;&lt; 17];
+
+
+TreeNode* TreeNode::buffer[32] = {
+	buf0,
+	buf1,
+	buf2,
+	buf3,
+	buf4,
+	buf5,
+	buf6,
+	buf7,
+	buf8,
+	buf9,
+	buf10,
+	buf11,
+	buf12,
+	buf13,
+	buf14,
+	buf15,
+	buf16,
+	buf17
+};
+
+
+TreeNode* cache;
+
+
+bool Less1(int a, int b)
+{
+	if (values[a] &lt; values[b]) return true;
+	if (values[a] &gt; values[b]) return false;
+	return a &lt; b;
+}
+
+
+void work2()
+{
+	scanf_s(&#34;%d&#34;, &#38;n);
+
+	for (int i = 0; i &lt; n; ++i)
+	{
+		scanf_s(&#34;%d&#34;, &#38;values[i]);
+		index[i] = i;
+	}
+
+	sort(index, index + n, Less1);
+
+	int l = 1;
+	while (l &lt; n) l *= 2;
+
+	cache = TreeNode::CreateTreeNode(0, 1, 0, l);
+	for (int i = 0, k = i; i &lt; n;)
+	{
+		int id = index[i];
+
+		for (; k &lt; n; ++k)
+		{
+			if (values[index[k]] != values[id])
+			{
+				break;
+			}
+
+			int l = -1, r = n;
+			if (i &gt; 0)
+			{
+				cache-&gt;get(index[k], l, r);
+			}
+
+			left[index[k]] = l;
+			right[index[k]] = r;
+		}
+
+		for (k = i; k &lt; n; ++k)
+		{
+			if (values[index[k]] != values[id])
+			{
+				break;
+			}
+
+			cache-&gt;add(index[k]);
+		}
+
+		i = k;
+	}
+
+	leftsums[0] = values[0];
+	for (int i = 1; i &lt; n; ++i)
+	{
+		leftsums[i] = leftsums[i - 1] + values[i];
+	}
+
+	rightsums[n - 1] = values[n - 1];
+	for (int i = n - 2; i &gt;= 0; --i)
+	{
+		rightsums[i] = rightsums[i + 1] + values[i];
+	}
+
+	for (int i = 0; i &lt; n; ++i)
+	{
+		long long sum = leftsums[i] + rightsums[i] - values[i];
+		if (left[i] != -1) sum -= leftsums[left[i]];
+		if (right[i] != n) sum -= rightsums[right[i]];
+
+		if (sum * values[i] &gt; res)
+		{
+			res = sum * values[i];
+			res_start = left[i] + 1;
+			res_end = right[i] - 1;
+		}
+	}
+
+	printf(&#34;%lld\n&#34;, res);
+	printf(&#34;%d %d\n&#34;, res_start + 1, res_end + 1);
+}
+
+
+int main()
+{
+	work2();
+	return 0;
+}</pre>
+</ul>
+</body></html>

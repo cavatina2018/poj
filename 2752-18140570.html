@@ -1,0 +1,69 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2752">2752</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 2608K</td><td width=10px></td><td><b>Time:</b> 157MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	500000
+
+
+int n;
+char str[MAX_N];
+int counts[MAX_N];
+int rescount;
+int results[MAX_N];
+
+
+void calc()
+{
+	n = strlen(str);
+	counts[1] = 0;
+	rescount = 0;
+
+	for (int i = 1, curr = 0; i &lt; n; ++i) {
+		while (str[curr] != str[i]) {
+			if (curr == 0) break;
+			curr = counts[curr];
+		}
+		if (str[curr] != str[i]) {
+			counts[i + 1] = curr;
+		}
+		else {
+			counts[i + 1] = ++curr;
+		}
+	}
+
+	for (int i = counts[n]; i &gt; 0; i = counts[i]) {
+		results[rescount++] = i;
+	}
+	results[rescount++] = n;
+
+	sort(results, results + rescount);
+
+	for (int i = 0; i &lt; rescount; ++i) {
+		printf(&#34;%d &#34;, results[i]);
+	}
+	printf(&#34;\n&#34;);
+}
+
+
+int main()
+{
+	while (scanf_s(&#34;%s&#34;, str, MAX_N) &gt; 0) {
+		calc();
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

@@ -1,0 +1,82 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3017">3017</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 2360K</td><td width=10px></td><td><b>Time:</b> 407MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstdlib&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	100000
+
+
+int n;
+long long m;
+int values[MAX_N + 1];
+long long sums[MAX_N + 1];
+long long results[MAX_N + 1];
+int indices[MAX_N + 1];
+int tops[MAX_N + 1];
+int indicecount;
+
+
+long long calc()
+{
+	sums[0] = 0;
+	for (int i = 1; i &lt;= n; ++i) {
+		sums[i] = sums[i - 1] + values[i];
+	}
+
+	results[0] = 0;
+	indices[0] = 0;
+	indicecount = 1;
+
+	for (int i = 1; i &lt;= n; ++i) {
+		int idx = indices[indicecount - 1];
+		long long res = results[idx] + values[i];
+		for (int j = indicecount - 2; j &gt;= 0; --j) {
+			idx = indices[j];
+			if (sums[i] - sums[idx] &gt; m) break;
+			tops[j] = max(tops[j], values[i]);
+			long long ret = results[idx] + tops[j];
+			if (ret &lt; res) res = ret;
+		}
+		results[i] = res;
+		if (res != results[indices[indicecount - 1]]) {
+			tops[indicecount - 1] = values[i];
+			indices[indicecount++] = i;
+		}
+		else {
+			indices[indicecount - 1] = i;
+		}
+	}
+
+	return results[n];
+}
+
+
+int main()
+{
+	scanf(&#34;%d %lld&#34;, &#38;n, &#38;m);
+	for (int i = 1; i &lt;= n; ++i) {
+		scanf(&#34;%d&#34;, &#38;values[i]);
+		if (values[i] &gt; m) {
+			printf(&#34;-1\n&#34;);
+			return 0;
+		}
+	}
+
+	printf(&#34;%lld\n&#34;, calc());
+	return 0;
+}</pre>
+</ul>
+</body></html>

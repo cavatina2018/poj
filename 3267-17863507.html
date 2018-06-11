@@ -1,0 +1,93 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3267">3267</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 28272K</td><td width=10px></td><td><b>Time:</b> 1000MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;cstring&gt;
+#define MAX_W	650
+#define MAX_L	30
+#define MAX_N	350
+
+
+int w, n;
+char message[MAX_N + 1];
+char words[MAX_W][MAX_L];
+int wordlens[MAX_W];
+bool states[MAX_N][MAX_W][MAX_L];
+int results[MAX_N][MAX_W][MAX_L];
+
+
+int calc(int len, int idx, int pos)
+{
+	if (len &gt;= n) {
+		if (pos == 0 || pos == wordlens[idx]) {
+			return 0;
+		}
+		else {
+			return INT_MAX;
+		}
+	}
+
+	if (states[len][idx][pos]) {
+		return results[len][idx][pos];
+	}
+
+	int res = INT_MAX;
+
+	if (pos == wordlens[idx]) {
+		for (int i = 0; i &lt; w; ++i) {
+			int ret = calc(len, i, 0);
+			if (ret &lt; res) res = ret;
+		}
+	}
+	else {
+		if (words[idx][pos] == message[len]) {
+			int ret = calc(len + 1, idx, pos + 1);
+			if (ret &lt; res) res = ret;
+		}
+		int ret = calc(len + 1, idx, pos);
+		if (ret &lt; INT_MAX &#38;&#38; ret + 1 &lt; res) {
+			res = ret + 1;
+		}
+	}
+
+	results[len][idx][pos] = res;
+	states[len][idx][pos] = true;
+	return res;
+}
+
+
+int calc()
+{
+	int res = INT_MAX;
+	for (int i = 0; i &lt; w; ++i) {
+		int ret = calc(0, i, 0);
+		if (ret &lt; res) res = ret;
+	}
+	return res;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d %s&#34;, &#38;w, &#38;n, message, MAX_N + 1);
+	for (int i = 0; i &lt; w; ++i) {
+		scanf_s(&#34;%s&#34;, words[i], MAX_L);
+		wordlens[i] = strlen(words[i]);
+	}
+	printf(&#34;%d\n&#34;, calc());
+    return 0;
+}</pre>
+</ul>
+</body></html>

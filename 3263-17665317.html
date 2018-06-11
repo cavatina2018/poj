@@ -1,0 +1,93 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3263">3263</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 348K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	10000
+#define MAX_R	10000
+
+
+int n, r;
+int heights[MAX_N + 2];
+pair&lt;int,int&gt; records[MAX_R];
+int maxheight;
+int index;
+int results[MAX_N + 2];
+int recidx;
+bool states[MAX_N + 2];
+
+
+bool Less(const pair&lt;int,int&gt;&#38; a, const pair&lt;int,int&gt;&#38; b)
+{
+	if (a.first &lt; b.first) return true;
+	if (a.first &gt; b.first) return false;
+	return a.second - a.first &gt; b.second - b.first;
+}
+
+
+void calc(int s, int e, int m)
+{
+	if (!states[s]) {
+		states[s] = true;
+		results[s] = m;
+	}
+	if (!states[e]) {
+		states[e] = true;
+		results[e] = m;
+	}
+	
+	while (recidx &lt; r &#38;&#38; records[recidx].first == s &#38;&#38; records[recidx].second == e) {
+		recidx++;
+	}
+
+	for (int i = s; i &lt; e; ) {
+		if (recidx &gt;= r || i != records[recidx].first) {
+			if (!states[i]) {
+				states[i] = true;
+				results[i] = m - 1;
+			}
+			++i;
+		}
+		else {
+			int a = records[recidx].first, b = records[recidx].second;
+			recidx++;
+			calc(a, b, m - 1);
+			i = b;
+		}
+	}
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d %d %d&#34;, &#38;n, &#38;index, &#38;maxheight, &#38;r);
+	for (int i = 0; i &lt; r; ++i) {
+		scanf_s(&#34;%d %d&#34;, &#38;records[i].first, &#38;records[i].second);
+		if (records[i].first &gt; records[i].second) {
+			int h = records[i].first;
+			records[i].first = records[i].second;
+			records[i].second = h;
+		}
+	}
+
+	sort(records, records + r, Less);
+	calc(0, n + 1, maxheight + 1);
+
+	for (int i = 1; i &lt;= n; ++i) {
+		printf(&#34;%d\n&#34;, results[i]);
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

@@ -1,0 +1,136 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2823">2823</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 22724K</td><td width=10px></td><td><b>Time:</b> 6000MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;queue&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+
+#define MAX_N	1000000
+#define SCANF	scanf_s
+
+
+int n, k;
+int minvalue[MAX_N], maxvalue[MAX_N];
+struct Num
+{
+	int value;
+	bool del;
+};
+Num nums[MAX_N];
+
+struct Comp1
+{
+	bool operator()(int a, int b) const
+	{
+		return nums[a].value &lt; nums[b].value;
+	}
+};
+
+struct Comp2
+{
+	bool operator()(int a, int b) const
+	{
+		return nums[a].value &gt; nums[b].value;
+	}
+};
+
+priority_queue&lt;int, vector&lt;int&gt;, Comp2&gt; *window1;
+priority_queue&lt;int, vector&lt;int&gt;, Comp1&gt; *window2;
+
+
+void work2()
+{
+	SCANF(&#34;%d %d&#34;, &#38;n, &#38;k);
+
+	for (int i = 0; i &lt; n; ++i)
+	{
+		SCANF(&#34;%d&#34;, &#38;nums[i].value);
+	}
+
+	window1 = new priority_queue&lt;int, vector&lt;int&gt;, Comp2&gt;;
+	window2 = new priority_queue&lt;int, vector&lt;int&gt;, Comp1&gt;;
+
+	for (int i = 0; i &lt; k; ++i)
+	{
+		window1-&gt;push(i);
+		window2-&gt;push(i);
+	}
+
+	minvalue[0] = nums[window1-&gt;top()].value;
+	maxvalue[0] = nums[window2-&gt;top()].value;
+
+	for (int i = k, j = 1; i &lt; n; ++i, ++j)
+	{
+		if (nums[i - k].value != nums[i].value)
+		{
+			nums[i - k].del = true;
+			window1-&gt;push(i);
+			window2-&gt;push(i);
+		}
+
+		while (true)
+		{
+			int index = window1-&gt;top();
+			if (nums[index].del)
+			{
+				window1-&gt;pop();
+			}
+			else break;
+		}
+		minvalue[j] = nums[window1-&gt;top()].value;
+
+		while (true)
+		{
+			int index = window2-&gt;top();
+			if (nums[index].del)
+			{
+				window2-&gt;pop();
+			}
+			else break;
+		}
+		maxvalue[j] = nums[window2-&gt;top()].value;
+	}
+
+	if (true)//false)
+	{
+		for (int i = 0; i &lt; n - k + 1; i++)
+		{
+			printf(&#34;%d &#34;, minvalue[i]);
+		}
+
+		printf(&#34;\n&#34;);
+	}
+
+	if (true)//false)
+	{
+		for (int i = 0; i &lt; n - k + 1; i++)
+		{
+			printf(&#34;%d &#34;, maxvalue[i]);
+		}
+
+		printf(&#34;\n&#34;);
+	}
+}
+
+
+int main()
+{
+	work2();
+	return 0;
+}</pre>
+</ul>
+</body></html>

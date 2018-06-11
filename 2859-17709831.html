@@ -1,0 +1,102 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2859">2859</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 4124K</td><td width=10px></td><td><b>Time:</b> 3750MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	500000
+
+
+int n, a, b;
+pair&lt;int, int&gt; points[MAX_N];
+
+
+bool Less(const pair&lt;int, int&gt;&#38; i, const pair&lt;int, int&gt;&#38; j)
+{
+	return i.first &lt; j.first;
+}
+
+
+int calc(int start1, int start2, int end1, int end2)
+{
+	int res = 0;
+
+	for (int i = start1; i &lt; start2; ++i) {
+		pair&lt;int, int&gt; target = points[i];
+		target.second += b;
+		int leftup = lower_bound(points + i, points + start2, target) - points;
+		if (leftup &gt;= start2) {
+			break;
+		}
+		else if (points[leftup].second != target.second) {
+			continue;
+		}
+
+		target.first = points[end1].first;
+		target.second = points[leftup].second;
+		int rightup = lower_bound(points + end1, points + end2, target) - points;
+		if (rightup &gt;= end2 || points[rightup].second != target.second) {
+			continue;
+		}
+
+		target.second = points[rightup].second - b;
+		int rightdown = lower_bound(points + end1, points + end2, target) - points;
+		if (rightdown &gt;= end2 || points[rightdown].second != target.second) {
+			continue;
+		}
+
+		++res;
+	}
+
+	return res;
+}
+
+
+int calc()
+{
+	sort(points, points + n);
+	
+	int start = 0, res = 0;
+	while (start &lt; n) {
+		pair&lt;int, int&gt; target = points[start];
+		target.first += a;
+		
+		int end = lower_bound(points + start, points + n, target, Less) - points;
+		if (end &gt;= n) {
+			break;
+		}
+
+		int start2 = upper_bound(points + start, points + n, points[start], Less) - points;
+
+		if (points[end].first == target.first) {
+			int end2 = upper_bound(points + start, points + n, target, Less) - points;
+			res += calc(start, start2, end, end2);
+		}		
+		start = start2;
+	}
+
+	return res;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d %d&#34;, &#38;n, &#38;a, &#38;b);
+	for (int i = 0; i &lt; n; ++i) {
+		scanf_s(&#34;%d %d&#34;, &#38;points[i].first, &#38;points[i].second);
+	}
+	printf(&#34;%d\n&#34;, calc());
+    return 0;
+}</pre>
+</ul>
+</body></html>

@@ -1,0 +1,89 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2772">2772</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 200K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	1000
+
+
+long long n, f, b;
+long long floors[2][MAX_N];
+long long counts[2];
+
+
+long long calc()
+{
+	sort(floors[0], floors[0] + counts[0]);
+	sort(floors[1], floors[1] + counts[1]);
+
+	if (b == 0) {
+		if (counts[1] == 0) {
+			return 0;
+		}
+		return f - floors[1][0];
+	}
+
+	long long res = 0, left = 0;
+	if (b % n == 0) {
+		long long c = b / n - 1;
+		res += c * f * 2;
+		left = n;
+	}
+	else {
+		long long c = b / n;
+		res += c * f * 2;
+		left = b % n;
+	}
+	
+	for (long long i = 0; i &lt; counts[0]; ++i) {
+		if (--left == 0) {
+			res += floors[0][i] + f;
+			return res;
+		}
+	}
+
+	for (long long i = counts[1] - 1; i &gt;= 0; --i) {
+		if (--left == 0) {
+			res += f - floors[1][i] + 2 * f;
+			return res;
+		}
+	}
+
+	while (true) printf(&#34;...&#34;);
+	return -1;
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		scanf_s(&#34;%lld %lld %lld&#34;, &#38;n, &#38;f, &#38;b);
+		counts[0] = counts[1] = 0;
+		for (int j = 0; j &lt; n; ++j) {
+			long long floor, hasbox; scanf_s(&#34;%lld %lld&#34;, &#38;floor, &#38;hasbox);
+			if (!hasbox) {
+				floors[0][counts[0]++] = floor;
+			}
+			else {
+				floors[1][counts[1]++] = floor;
+			}
+		}
+		printf(&#34;%lld\n&#34;, calc());
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

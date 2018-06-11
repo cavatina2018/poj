@@ -1,0 +1,112 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2960">2960</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 220K</td><td width=10px></td><td><b>Time:</b> 110MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_K	100
+#define MAX_V	10000
+#define MAX_N	100
+
+
+int m, k;
+int moves[MAX_K];
+int pilecounts[MAX_N];
+int piles[MAX_N][MAX_N];
+int results[MAX_V + 1];
+int M;
+bool states[100000];
+int cache[100000];
+int cachelen;
+
+
+void init()
+{
+	results[0] = 0;
+	for (int i = 1; i &lt;= M; ++i) {
+		cachelen = 0;
+		for (int j = 0; j &lt; k; ++j) {
+			if (moves[j] &lt;= i) {
+				int ret = results[i - moves[j]];
+
+				while (ret &gt;= 100000) printf(&#34;......&#34;);
+
+				if (!states[ret]) {
+					states[ret] = true;
+					cache[cachelen++] = ret;
+
+					while (cachelen &gt;= 100000) printf(&#34;......&#34;);
+				}
+			}
+		}
+		int res = 0;
+		while (states[res]) {
+			++res;
+		}
+		results[i] = res;
+
+		for (int j = 0; j &lt; cachelen; ++j) {
+			states[cache[j]] = false;
+		}
+	}
+}
+
+
+void calc()
+{
+	for (int j = 0; j &lt; m; ++j) {
+		int sum = 0;
+		for (int i = 0; i &lt; pilecounts[j]; ++i) {
+			sum ^= results[piles[j][i]];
+		}
+		if (sum != 0) {
+			printf(&#34;W&#34;);
+		}
+		else {
+			printf(&#34;L&#34;);
+		}
+	}
+	printf(&#34;\n&#34;);
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d&#34;, &#38;k);
+		if (!k) break;
+		for (int i = 0; i &lt; k; ++i) {
+			scanf_s(&#34;%d&#34;, &#38;moves[i]);
+		}
+
+		M = 0;
+		scanf_s(&#34;%d&#34;, &#38;m);
+		for (int i = 0; i &lt; m; ++i) {
+			scanf_s(&#34;%d&#34;, &#38;pilecounts[i]);
+			for (int j = 0; j &lt; pilecounts[i]; ++j) {
+				scanf_s(&#34;%d&#34;, &#38;piles[i][j]);
+				if (piles[i][j] &gt; M) {
+					M = piles[i][j];
+				}
+			}
+			
+		}
+
+		init();
+		calc();
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

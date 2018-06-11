@@ -1,0 +1,181 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3075">3075</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 204K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int grid[3][3];
+char* targets[] = {
+	&#34;03&#34;,
+	&#34;06&#34;,
+	&#34;36&#34;,
+	&#34;036&#34;,
+	
+	&#34;04&#34;,
+	
+	&#34;05&#34;,
+	&#34;07&#34;,
+	&#34;57&#34;,
+	&#34;057&#34;,
+
+	&#34;13&#34;,
+	
+	&#34;14&#34;,
+	&#34;16&#34;,
+	&#34;17&#34;,
+	&#34;46&#34;,
+	&#34;47&#34;,
+	&#34;67&#34;,
+	&#34;146&#34;,
+	&#34;147&#34;,
+	&#34;167&#34;,
+	&#34;467&#34;,
+	&#34;1467&#34;,
+
+	&#34;15&#34;,
+
+	&#34;23&#34;,
+	&#34;27&#34;,
+	&#34;37&#34;,
+	&#34;237&#34;,
+
+	&#34;24&#34;,
+
+	&#34;25&#34;,
+	&#34;26&#34;,
+	&#34;56&#34;,	
+	&#34;256&#34;	
+};
+
+
+bool check()
+{
+	int blackcount = 0, whitecount = 0;
+	for (int i = 0; i &lt; 3; ++i) {
+		for (int j = 0; j &lt; 3; ++j) {
+			if (grid[i][j] == 1) blackcount++;
+			if (grid[i][j] == 2) whitecount++;
+		}
+	}
+
+	if (blackcount != whitecount &#38;&#38; blackcount != whitecount + 1) {
+		return false;
+	}
+
+	char buffer[10];
+	int buflen = 0;
+	bool black = false, white = false;
+	int count = 0;
+
+	for (int i = 0; i &lt; 3; ++i) {
+		if (grid[i][0] != 0 &#38;&#38; grid[i][1] == grid[i][0] &#38;&#38; grid[i][2] == grid[i][0]) {
+			buffer[buflen++] = (char)(&#39;0&#39; + i);
+			if (grid[i][0] == 1) {
+				black = true;
+			}
+			else {
+				white = true;
+			}
+			++count;
+		}
+	}
+	for (int i = 0; i &lt; 3; ++i) {
+		if (grid[0][i] != 0 &#38;&#38; grid[1][i] == grid[0][i] &#38;&#38; grid[2][i] == grid[0][i]) {
+			buffer[buflen++] = (char)(&#39;0&#39; + i + 3);
+			if (grid[0][i] == 1) {
+				black = true;
+			}
+			else {
+				white = true;
+			}
+			++count;
+		}
+	}
+
+	if (grid[0][0] != 0 &#38;&#38; grid[1][1] == grid[0][0] &#38;&#38; grid[2][2] == grid[0][0]) {
+		buffer[buflen++] = &#39;6&#39;;
+		if (grid[0][0] == 1) {
+			black = true;
+		}
+		else {
+			white = true;
+		}
+		++count;
+	}
+
+	if (grid[2][0] != 0 &#38;&#38; grid[1][1] == grid[2][0] &#38;&#38; grid[0][2] == grid[2][0]) {
+		buffer[buflen++] = &#39;7&#39;;
+		if (grid[2][0] == 1) {
+			black = true;
+		}
+		else {
+			white = true;
+		}
+		++count;
+	}
+	buffer[buflen] = 0;
+
+	if (black &#38;&#38; white) return false;
+	if (count == 0) {
+		if (blackcount + whitecount == 9) {
+			return true;
+		}
+		return false;
+	}
+
+	if (count == 1) {
+		if (black &#38;&#38; blackcount == whitecount + 1 ||
+			white &#38;&#38; blackcount == whitecount) {
+			return true;
+		}
+		return false;
+	}
+	
+	for (int i = 0; i &lt; sizeof(targets) / sizeof(targets[0]); ++i) {
+		if (!strcmp(buffer, targets[i])) {
+			if (black &#38;&#38; blackcount == whitecount + 1 ||
+				white &#38;&#38; blackcount == whitecount) {
+				return true;
+			}
+			return false;
+		}
+	}
+	return false;
+}
+
+
+int main()
+{
+	char buffer[20];
+	while (true) {
+		scanf_s(&#34;%s&#34;, buffer, 20);
+		if (!strcmp(buffer, &#34;end&#34;)) break;
+		for (int i = 0; i &lt; 3; ++i) {
+			for (int j = 0; j &lt; 3; ++j) {
+				char c = buffer[i * 3 + j];
+				if (c == &#39;X&#39;) grid[i][j] = 1;
+				if (c == &#39;O&#39;) grid[i][j] = 2;
+				if (c == &#39;.&#39;) grid[i][j] = 0;
+			}
+		}
+		if (check()) {
+			printf(&#34;valid\n&#34;);
+		}
+		else {
+			printf(&#34;invalid\n&#34;);
+		}
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

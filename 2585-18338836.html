@@ -1,0 +1,93 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2585">2585</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 552K</td><td width=10px></td><td><b>Time:</b> 657MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;string&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+
+set&lt;string&gt; cache;
+
+
+string tostr(int window[4][4])
+{
+	string res(&#39; &#39;, 16);
+
+	for (int i = 0; i &lt; 4; ++i) {
+		for (int j = 0; j &lt; 4; ++j) {
+			res[i * 4 + j] = (char)(&#39;0&#39; + window[i][j]);
+		}
+	}
+
+	return res;
+}
+
+
+void init()
+{
+	int perm[9];
+	for (int i = 1; i &lt;= 9; ++i) {
+		perm[i - 1] = i;
+	}
+
+	int window[4][4];
+
+	do {
+		for (int i = 0; i &lt; 9; ++i) {
+			int idx = perm[i];
+			int x = (idx - 1) % 3;
+			int y = (idx - 1) / 3;
+			window[y][x] = window[y][x + 1] = window[y + 1][x] = window[y + 1][x + 1] = idx;
+		}
+
+		cache.insert(tostr(window));
+	} while (next_permutation(perm, perm + 9));
+}
+
+
+int main()
+{
+	init();
+
+	char buf[100];
+	while (true) {
+		scanf_s(&#34;%s&#34;, buf, 100);
+		if (!strcmp(buf, &#34;ENDOFINPUT&#34;)) {
+			break;
+		}
+
+		int window[4][4];
+		for (int i = 0; i &lt; 4; ++i) {
+			for (int j = 0; j &lt; 4; ++j) {
+				scanf_s(&#34;%d&#34;, &#38;window[i][j]);
+			}
+		}
+
+		scanf_s(&#34;%s&#34;, buf, 100);
+
+		if (cache.find(tostr(window)) != cache.end()) {
+			printf(&#34;THESE WINDOWS ARE CLEAN\n&#34;);
+		}
+		else {
+			printf(&#34;THESE WINDOWS ARE BROKEN\n&#34;);
+		}
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

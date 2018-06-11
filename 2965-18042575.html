@@ -1,0 +1,200 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2965">2965</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 1320K</td><td width=10px></td><td><b>Time:</b> 579MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;time.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	(1 &lt;&lt; 16)
+
+
+bool grid[4][4];
+bool states[MAX_N];
+int click[MAX_N];
+int buffer[2][MAX_N];
+int buflen[2];
+int prevstates[MAX_N];
+int prev_x[MAX_N];
+int prev_y[MAX_N];
+int start;
+int end;
+
+
+inline void togrid(int x)
+{
+	for (int i = 0; i &lt; 4; ++i) {
+		for (int j = 0; j &lt; 4; ++j) {
+			int k = i * 4 + j;
+			if (x &#38; (1 &lt;&lt; k)) {
+				grid[i][j] = true;
+			}
+			else {
+				grid[i][j] = false;
+			}
+		}
+	}
+}
+
+
+inline int fromgrid()
+{
+	int x = 0;
+	for (int i = 0; i &lt; 4; ++i) {
+		for (int j = 0; j &lt; 4; ++j) {
+			int k = i * 4 + j;
+			if (grid[i][j]) {
+				x |= (1 &lt;&lt; k);
+			}
+		}
+	}
+	return x;
+}
+
+
+inline bool add(int next, int x, int c, int prevstate, int action_x, int action_y)
+{
+	states[x] = true;
+	click[x] = c;
+	buffer[next][buflen[next]] = x;
+	buflen[next]++;
+	prevstates[x] = prevstate;
+	prev_x[x] = action_x;
+	prev_y[x] = action_y;
+
+	return x == end;
+}
+
+
+int bfs()
+{
+	if (start == end) {
+		return 0;
+	}
+
+	memset(states, 0, sizeof(states));
+	states[start] = true;
+	click[start] = 0;
+	buffer[0][0] = start;
+	buflen[0] = 1;
+
+	int prev = 0, next = 1;
+	for (int step = 1; ; ++step) {
+		if (!buflen[prev]) break;
+		buflen[next] = 0;
+
+		for (int i = 0; i &lt; buflen[prev]; ++i) {
+			int x = buffer[prev][i];
+			
+			for (int p = 0; p &lt; 4; ++p) {
+				for (int q = 0; q &lt; 4; ++q) {
+					int k = p * 4 + q;
+					if (click[x] &#38; (1 &lt;&lt; k)) {
+						continue;
+					}
+
+					int y = x;
+
+					for (int k = 0; k &lt; 4; ++k) {
+						y ^= (1 &lt;&lt; (k * 4 + q));
+					}
+					for (int k = 0; k &lt; 4; ++k) {
+						y ^= (1 &lt;&lt; (p * 4 + k));
+					}
+					y ^= (1 &lt;&lt; (p * 4 + q));
+
+					if (!states[y]) {
+						if (add(next, y, click[x] | (1 &lt;&lt; k), x, p, q)) {
+							return step;
+						}
+					}
+				}
+			}
+		}
+
+		prev = (prev + 1) % 2;
+		next = (next + 1) % 2;
+	}
+
+	return -1;
+}
+
+
+void printres()
+{
+	int res_x[100], res_y[100], reslen = 0;
+
+	for (int s = end; s != start;) {
+		res_x[reslen] = prev_x[s];
+		res_y[reslen] = prev_y[s];
+		reslen++;
+		s = prevstates[s];
+	}
+
+	for (int i = reslen - 1; i &gt;= 0; --i) {
+		printf(&#34;%d %d\n&#34;, res_x[i] + 1, res_y[i] + 1);
+	}
+}
+
+
+void test()
+{
+	time_t t = time(NULL);
+
+	for (int i = 0; i &lt; 1000; ++i) {
+		for (int i = 0; i &lt; 4; ++i) {
+			for (int j = 0; j &lt; 4; ++j) {
+				grid[i][j] = false;// rand() % 2 == 0;
+			}
+		}
+
+		start = fromgrid();
+		end = 0xffff;
+
+		int ret = bfs();
+		if (ret &lt; 0) {
+			while (true) printf(&#34;Impossible\n&#34;);
+		}
+		else {
+			printf(&#34;%d\n&#34;, ret);
+			printres();
+		}
+	}
+
+	printf(&#34;%llu\n&#34;, time(NULL) - t);
+}
+
+
+int main()
+{
+	for (int i = 0; i &lt; 4; ++i) {
+		char buf[10]; scanf_s(&#34;%s&#34;, buf, 10);
+		for (int j = 0; j &lt; 4; ++j) {
+			grid[i][j] = buf[j] == &#39;-&#39;;
+		}
+	}
+
+	start = fromgrid();
+	end = 0xffff;
+
+	int ret = bfs();
+	if (ret &lt; 0) {
+		while(true) printf(&#34;Impossible\n&#34;);
+	}
+	else {
+		printf(&#34;%d\n&#34;, ret);
+		printres();
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

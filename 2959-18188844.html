@@ -1,0 +1,86 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2959">2959</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 164K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;math.h&gt;
+#include &lt;cstring&gt;
+#define PI	3.1415926535898
+
+
+double a, b, c;
+
+
+double Round(double val)
+{
+	val = (val&gt; 0.0) ? floor(val + 0.5) : ceil(val - 0.5);
+	return val;
+}
+
+
+int FC(double a, double b)
+{
+	if (a &gt; b + 0.000001) return 1;
+	if (a &lt; b - 0.000001) return -1;
+
+	long long a1 = (long long)(Round(a * 10000000));
+	long long b1 = (long long)(Round(b * 10000000));
+
+	if (a1 &gt; b1) return 1;
+	if (a1 &lt; b1) return -1;
+	else return 0;
+}
+
+
+bool test(long long count)
+{
+	double angle = PI / count;
+	double dist = (a - b) * sin(angle) * 2;
+	return FC(dist, c + 2 * b) &gt;= 0;
+}
+
+
+long long calc()
+{
+	if (FC(a, b) &lt; 0) return 0;
+	a /= 2;
+	b /= 2;
+
+	long long res = 1, x = 2, y = INT_MAX;
+	while (x &lt;= y) {
+		long long z = (x + y) / 2;
+		if (test(z)) {
+			if (z &gt; res) res = z;
+			x = z + 1;
+		}
+		else {
+			y = z - 1;
+		}
+	}
+	return res;
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		scanf_s(&#34;%lf %lf %lf&#34;, &#38;a, &#38;b, &#38;c);
+		printf(&#34;%lld\n&#34;, calc());
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

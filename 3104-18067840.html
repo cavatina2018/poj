@@ -1,0 +1,84 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3104">3104</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 524K</td><td width=10px></td><td><b>Time:</b> 547MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	100000
+
+
+int n, k;
+int water[MAX_N];
+
+
+bool test(int x)
+{
+	int count = x;
+
+	for (int i = 0; i &lt; n; ++i) {
+		if (water[i] &lt;= x) continue;
+		int a = water[i] - x, b = k - 1;
+		int c = (a % b == 0) ? (a / b) : (a / b + 1);
+		if (count &lt; c) {
+			return false;
+		}
+		count -= c;
+	}
+
+	return true;
+}
+
+
+int calc()
+{
+	int m = 0;
+	for (int i = 0; i &lt; n; ++i) {
+		if (water[i] &gt; m) {
+			m = water[i];
+		}
+	}
+
+	if (k == 1) {	
+		return m;
+	}
+
+	int a = 0, b = m, res = m;
+	while (a &lt;= b) {
+		int c = (a + b) / 2;
+		if (test(c)) {
+			if (c &lt; res) res = c;
+			b = c - 1;
+		}
+		else {
+			a = c + 1;
+		}
+	}
+	return res;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d&#34;, &#38;n);
+	for (int i = 0; i &lt; n; ++i) {
+		scanf_s(&#34;%d&#34;, &#38;water[i]);
+		while (water[i] &lt; 1) printf(&#34;...&#34;);
+	}
+	scanf_s(&#34;%d&#34;, &#38;k);
+	
+	while (n &lt; 1 || n &gt; MAX_N || k &lt; 1) printf(&#34;...&#34;);
+
+	printf(&#34;%d\n&#34;, calc());
+    return 0;
+}</pre>
+</ul>
+</body></html>

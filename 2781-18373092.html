@@ -1,0 +1,79 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2781">2781</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 40052K</td><td width=10px></td><td><b>Time:</b> 454MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	100000
+#define MAX_M	100
+
+
+int n;
+int edgecounts[MAX_N];
+int edges[MAX_N][MAX_M];
+int s, e;
+bool states[MAX_N];
+int buffer[2][MAX_N];
+int buflen[2];
+
+
+int calc()
+{
+	states[s] = true;
+	buffer[0][0] = s;
+	buflen[0] = 1;
+
+	int prev = 0, curr = 1;
+	for (int i = 1; ; ++i) {
+		if (buflen[prev] == 0) break;
+
+		buflen[curr] = 0;
+		for (int j = 0; j &lt; buflen[prev]; ++j) {
+			int node = buffer[prev][j];
+
+			for (int k = 0; k &lt; edgecounts[node]; ++k) {
+				int next = edges[node][k];
+				if (states[next]) continue;
+				
+				states[next] = true;
+				buffer[curr][buflen[curr]++] = next;
+				if (next == e) return i;
+			}
+		}
+
+		prev = (prev + 1) % 2;
+		curr = (curr + 1) % 2;
+	}
+
+	while (true) printf(&#34;...&#34;);
+	return -1;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d&#34;, &#38;n);
+	for (int i = 0; i &lt; n; ++i) {
+		int id, c; scanf_s(&#34;%d %d&#34;, &#38;id, &#38;c);
+		for (int j = 0; j &lt; c; ++j) {
+			int a; scanf_s(&#34;%d&#34;, &#38;a);
+			edges[id][edgecounts[id]++] = a;
+		}
+	}
+	scanf_s(&#34;%d %d&#34;, &#38;s, &#38;e);
+	printf(&#34;%d %d %d\n&#34;, s, e, calc() - 1);
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

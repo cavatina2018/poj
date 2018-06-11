@@ -1,0 +1,106 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3073">3073</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 156K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#define MAX_N	100
+
+
+char* mappings[26] = {
+	&#34;4&#34;,
+	&#34;|3&#34;,
+	&#34;(&#34;,
+	&#34;|)&#34;,
+	&#34;3&#34;,
+	&#34;|=&#34;,
+	&#34;6&#34;,
+	&#34;#&#34;,
+	&#34;|&#34;,
+	&#34;_|&#34;,
+	&#34;|&lt;&#34;,
+	&#34;|_&#34;,
+	&#34;|\\/|&#34;,
+	&#34;|\\|&#34;,
+	&#34;0&#34;,
+	&#34;|0&#34;,
+	&#34;(,)&#34;,
+	&#34;|?&#34;,
+	&#34;5&#34;,
+	&#34;7&#34;,
+	&#34;|_|&#34;,
+	&#34;\\/&#34;,
+	&#34;\\/\\/&#34;,
+	&#34;&gt;&lt;&#34;,
+	&#34;-/&#34;,
+	&#34;2&#34;
+};
+
+
+int textlen, spamlen;
+char text[MAX_N + 1];
+char spam[MAX_N * 4 + 1];
+long long results[MAX_N * 4 + 1];
+
+
+long long calc()
+{
+	results[spamlen] = 1;
+
+	for (int i = spamlen - 1; i &gt;= 0; --i) {
+		results[i] = 0;
+		for (int j = 0; j &lt; 26; ++j) {
+			bool flag = true;
+			int len = 0;
+			for (int k = 0; mappings[j][k]; ++k, ++len) {
+				if (i + k &gt;= spamlen) {
+					flag = false;
+					break;
+				}
+				if (spam[i + k] != mappings[j][k]) {
+					flag = false;
+					break;
+				}
+			}
+			if (flag) {
+				results[i] += results[i + len];
+			}
+		}
+	}
+
+	return results[0];
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%s&#34;, text, MAX_N + 1);
+		if (!strcmp(text, &#34;end&#34;)) break;
+
+		textlen = strlen(text);
+		spamlen = 0;
+
+		for (int i = 0; i &lt; textlen; ++i) {
+			int idx = text[i] - &#39;A&#39;;
+			for (int j = 0; mappings[idx][j]; ++j) {
+				spam[spamlen++] = mappings[idx][j];
+			}
+		}
+
+		printf(&#34;%lld\n&#34;, calc());
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

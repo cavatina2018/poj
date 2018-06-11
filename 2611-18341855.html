@@ -1,0 +1,152 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2611">2611</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 208K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	30
+
+
+int n;
+int digits[MAX_N];
+
+
+string getres(int digits[], int len)
+{
+	string res;
+	for (int i = 0; i &lt; len; ++i) {
+		res += (char)(&#39;0&#39; + digits[i]);
+	}
+	return res;
+}
+
+
+void fromres(string s, int digits[], int&#38; len)
+{
+	for (int i = 0; i &lt; s.length(); ++i) {
+		digits[len++] = s[i] - &#39;0&#39;;
+	}
+}
+
+
+string calc(string s)
+{
+	string res;
+
+	if (s == &#34;&#34;) return s;
+
+	string s1 = s.substr(1);
+	string ret = calc(s1);
+	if (ret != s1) {
+		res += s[0];
+		res += ret;
+		return res;
+	}
+
+	int digits[MAX_N], digits2[MAX_N], len = 0;
+	fromres(s, digits, len);
+
+	if (digits[0] == 2 || digits[0] == 6) {
+		for (int j = 0; j &lt; len; ++j) {
+			digits2[j] = digits[j];
+		}
+		if (digits[0] == 2) digits2[0] = 5;
+		if (digits[0] == 6) digits2[0] = 9;
+
+		for (int j = 1; j &lt; len; ++j) {
+			if (digits2[j] == 5) digits2[j] = 2;
+			if (digits2[j] == 9) digits2[j] = 6;
+		}
+		sort(digits2 + 1, digits2 + len);
+
+		string ret = getres(digits2, len);
+		if (ret &gt; s) {
+			if (res == &#34;&#34; || res &gt; ret) res = ret;
+		}
+	}
+
+	for (int i = 1; i &lt; len; ++i) {
+		for (int j = 0; j &lt; len; ++j) {
+			digits2[j] = digits[j];
+		}
+
+		int c[2], count = 0;
+		{
+			int d = digits2[i];
+			if (d == 2 || d == 5) {
+				c[count++] = 2;
+				c[count++] = 5;
+			}
+			else if (d == 6 || d == 9) {
+				c[count++] = 6;
+				c[count++] = 9;
+			}
+			else {
+				c[count++] = d;
+			}
+		}
+
+		int tmp = digits2[i];
+		digits2[i] = digits2[0];
+		digits2[0] = tmp;
+
+		for (int j = 1; j &lt; len; ++j) {
+			if (digits2[j] == 5) digits2[j] = 2;
+			if (digits2[j] == 9) digits2[j] = 6;
+		}
+		sort(digits2 + 1, digits2 + len);
+
+		for (int j = 0; j &lt; count; ++j) {
+			digits2[0] = c[j];
+			string ret = getres(digits2, len);
+			if (ret &gt; s) {
+				if (res == &#34;&#34; || res &gt; ret) res = ret;
+			}
+		}
+	}
+
+	if (res == &#34;&#34;) res = s;
+	return res;
+}
+
+
+int main()
+{
+	char buf[1000];
+	while (true) {
+		scanf_s(&#34;%s&#34;, buf, 1000);
+		if (buf[0] == &#39;.&#39;) break;
+
+		n = 0;
+		for (int i = 0; buf[i]; ++i) {
+			if (buf[i] == &#39;.&#39;) continue;
+			int d = buf[i] - &#39;0&#39;;
+			digits[n++] = d;
+		}
+
+		string res = calc(getres(digits, n));
+		res.insert(n - 1, &#34;.&#34;);
+		if (res == buf) {
+			printf(&#34;The price cannot be raised.\n&#34;);
+		}
+		else {
+			printf(&#34;%s\n&#34;, res.c_str());
+		}
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

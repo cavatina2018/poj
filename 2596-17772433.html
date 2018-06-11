@@ -1,0 +1,125 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2596">2596</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 504K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	10
+
+
+int n;
+int dice[MAX_N][6];
+int dicemax[MAX_N][6];
+
+int mapping[6][4] = {
+	{ 1, 2, 3, 4 },
+	{ 0, 2, 4, 5 },
+	{ 0, 1, 3, 5 },
+	{ 0, 2, 4, 5 },
+	{ 0, 1, 3, 5 },
+	{ 1, 2, 3, 4 }
+};
+
+int mapping2[6] = { 5, 3, 4, 1, 2, 0 };
+
+
+bool states[1 &lt;&lt; MAX_N][MAX_N][6];
+int results[1 &lt;&lt; MAX_N][MAX_N][6];
+
+
+void init()
+{
+	for (int j = 0; j &lt; n; ++j) {
+		for (int k = 0; k &lt; 6; ++k) {
+			dicemax[j][k] = 0;
+
+			for (int i = 0; i &lt; 4; ++i) {
+				int idx = mapping[k][i];
+				if (dice[j][idx] &gt; dicemax[j][k]) {
+					dicemax[j][k] = dice[j][idx];
+				}
+			}
+		}
+	}
+}
+
+
+int calc(int st, int idx, int side)
+{
+	if (states[st][idx][side]) {
+		return results[st][idx][side];
+	}
+
+	int st2 = st &#38; ~(1 &lt;&lt; idx);
+	int bottom = dice[idx][mapping2[side]];
+
+	int res = 0;
+	if (st2) {
+		for (int i = 0; i &lt; n; ++i) {
+			if (i == idx) continue;
+			if (!(st2 &#38; (1 &lt;&lt; i))) continue;
+
+			for (int j = 0; j &lt; 6; ++j) {
+				if (dice[i][j] == bottom) {
+					int ret = calc(st2, i, j);
+					if (ret &gt; res) res = ret;
+				}
+			}		
+		}
+
+		if (res) {
+			res += dicemax[idx][side];
+		}
+	}
+	else {
+		res = dicemax[idx][side];
+	}
+
+	results[st][idx][side] = res;
+	states[st][idx][side] = true;
+	return res;
+}
+
+
+int calc()
+{
+	memset(states, 0, sizeof(states));
+	init();
+
+	int res = 0;
+	for (int i = 0; i &lt; n; ++i) {
+		for (int j = 0; j &lt; 6; ++j) {
+			int ret = calc((1 &lt;&lt; n) - 1, i, j);
+			if (ret &gt; res) res = ret;
+		}
+	}
+	return res;
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		scanf_s(&#34;%d&#34;, &#38;n);
+		for (int j = 0; j &lt; n; ++j) {
+			for (int k = 0; k &lt; 6; ++k) {
+				scanf_s(&#34;%d&#34;, &#38;dice[j][k]);
+			}
+		}
+		printf(&#34;%d\n&#34;, calc());
+	}
+
+	return 0;
+}</pre>
+</ul>
+</body></html>

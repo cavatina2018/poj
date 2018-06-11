@@ -1,0 +1,108 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2609">2609</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 264K</td><td width=10px></td><td><b>Time:</b> 79MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;vector&gt;
+using namespace std;
+#define MAX_N		200
+#define MAX_FERRY	10000
+
+
+int n;
+int ferry;
+int cars[MAX_N];
+bool states[MAX_FERRY + 1];
+int vstates[MAX_FERRY + 1];
+int vstatecount;
+int m;
+int choices[MAX_FERRY + 1];
+bool results[MAX_N];
+
+
+bool test(int k)
+{
+	memset(states, 0, sizeof(states));
+	states[0] = true;
+	vstates[0] = 0;
+	vstatecount = 1;
+	m = 0;
+
+	for (int i = 0; i &lt; k; ++i) {
+		int car = cars[i], count = vstatecount;
+		for (int j = 0; j &lt; count; ++j) {
+			int v = vstates[j] + car;
+			if (v &lt;= ferry &#38;&#38; !states[v]) {
+				states[v] = true;
+				choices[v] = i;
+				vstates[vstatecount++] = v;
+				if (v &gt; m) m = v;
+			}
+		}
+	}
+
+	memset(results, 0, sizeof(results));
+	while (m) {
+		results[choices[m]] = true;
+		m -= cars[choices[m]];
+	}
+
+	int sum = 0;
+	for (int i = 0; i &lt; k; ++i) {
+		if (results[i]) continue;
+		sum += cars[i];
+		if (sum &gt; ferry) break;
+	}
+
+	return sum &lt;= ferry;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d&#34;, &#38;ferry);
+	ferry *= 100;
+
+	n = 0;
+	while (true) {
+		int car; scanf_s(&#34;%d&#34;, &#38;car);
+		if (!car) break;
+		cars[n++] = car;
+	}
+
+	int a = 0, b = n, res = 0;
+	while (a &lt;= b) {
+		int c = (a + b) / 2;
+		if (test(c)) {
+			a = c + 1;
+			if (c &gt; res) res = c;
+		}
+		else {
+			b = c - 1;
+		}
+	}
+
+	test(res);
+	printf(&#34;%d\n&#34;, res);
+
+	for (int i = 0; i &lt; res; ++i) {
+		if (results[i]) {
+			printf(&#34;starboard\n&#34;);
+		}
+		else {
+			printf(&#34;port\n&#34;);
+		}
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

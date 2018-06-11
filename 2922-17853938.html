@@ -1,0 +1,95 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2922">2922</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 300K</td><td width=10px></td><td><b>Time:</b> 875MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	100
+
+
+int n;
+int heights[MAX_N][MAX_N];
+bool states[MAX_N][MAX_N];
+int minheight, maxheight;
+
+
+bool dfs(int i, int j, int min, int max)
+{
+	if (i &lt; 0 || i &gt;= n || j &lt; 0 || j &gt;= n ||
+		states[i][j] || heights[i][j] &lt; min || heights[i][j] &gt; max) {
+		return false;;
+	}
+
+	if (i == n - 1 &#38;&#38; j == n - 1) return true;
+
+	states[i][j] = true;
+	if (dfs(i + 1, j, min, max)) return true;
+	if (dfs(i - 1, j, min, max)) return true;
+	if (dfs(i, j + 1, min, max)) return true;
+	if (dfs(i, j - 1, min, max)) return true;
+	return false;
+}
+
+
+bool test(int diff)
+{
+	for (int i = minheight; i + diff &lt;= maxheight; ++i)
+	{
+		memset(states, 0, sizeof(states));
+		if (dfs(0, 0, i, i + diff)) return true;
+	}
+	return false;
+}
+
+
+int calc()
+{
+	int a = 0, b = maxheight - minheight, res = INT_MAX;
+	while (a &lt;= b) {
+		int c = (a + b) / 2;
+		if (test(c)) {
+			if (c &lt; res) res = c;
+			b = c - 1;
+		}
+		else {
+			a = c + 1;
+		}
+	}
+	return res;
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+
+	for (int k = 1; k &lt;= t; ++k) {
+		scanf_s(&#34;%d&#34;, &#38;n);
+
+		minheight = INT_MAX, maxheight = INT_MIN;
+		for (int i = 0; i &lt; n; ++i) {
+			for (int j = 0; j &lt; n; ++j) {
+				scanf_s(&#34;%d&#34;, &#38;heights[i][j]);
+				if (minheight &gt; heights[i][j]) minheight = heights[i][j];
+				if (maxheight &lt; heights[i][j]) maxheight = heights[i][j];
+			}
+		}
+		printf(&#34;Scenario #%d:\n&#34;, k);
+		printf(&#34;%d\n\n&#34;, calc());
+	}
+	return 0;
+}
+
+</pre>
+</ul>
+</body></html>

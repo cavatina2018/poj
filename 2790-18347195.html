@@ -1,0 +1,143 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2790">2790</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 748K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;time.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	400
+
+
+int n, m;
+int grid[MAX_N][MAX_N];
+int counts[MAX_N];
+int curr[MAX_N];
+int results[MAX_N];
+bool states[MAX_N];
+
+
+bool calc(int idx)
+{
+	if (idx &gt;= m) return true;
+
+	for (int i = 1; i &lt; m; ++i) {
+		if (states[i]) continue;
+		
+		bool flag = true;
+		for (int j = 0; j &lt; n; ++j) {
+			if (grid[j][i] == 0) {
+				if (curr[j] &gt; 0 &#38;&#38; curr[j] &lt; counts[j]) {
+					flag = false;
+					break;
+				}
+			}
+		}
+		if (!flag) continue;
+
+		states[i] = true;
+		results[idx] = i;
+
+		flag = true;
+		for (int j = 0; j &lt; n; ++j) {
+			if (grid[j][i] == 1) {
+				if (++curr[j] &lt; counts[j]) {
+					flag = false;
+				}
+			}
+		}
+
+		if (calc(idx + 1)) return true;
+
+		for (int j = 0; j &lt; n; ++j) {
+			if (grid[j][i] == 1) {
+				--curr[j];
+			}
+		}
+
+		states[i] = false;
+	}
+
+	return false;
+}
+
+
+void calc()
+{
+	results[0] = 0;
+
+	for (int i = 0; i &lt; n; ++i) {
+		if (grid[i][0]) {
+			curr[i] = 1;
+		}
+	}
+
+	memset(states, 0, sizeof(states));
+	bool ret = calc(1);
+	while (!ret) printf(&#34;...&#34;);
+
+	for (int i = 0; i &lt; m; ++i) {
+		printf(&#34;%d\n&#34;, results[i]);
+	}
+}
+
+
+void test()
+{
+	time_t T = time(NULL);
+
+	for (int t = 0; t &lt; 10; ++t) {
+		n = m = MAX_N;
+
+		memset(counts, 0, sizeof(counts));
+		memset(curr, 0, sizeof(curr));
+
+		for (int i = 0; i &lt; n; ++i) {
+			for (int j = 0; j &lt; m; ++j) {
+				if (rand() % 2) {
+					grid[i][j] = 1;
+					counts[i]++;
+				}
+			}
+		}
+		calc();
+	}
+
+	printf(&#34;%llu\n&#34;, time(NULL) - T);
+}
+
+
+int main()
+{
+	char buf[1000];
+
+	memset(counts, 0, sizeof(counts));
+	memset(curr, 0, sizeof(curr));
+
+	scanf_s(&#34;%d %d&#34;, &#38;n, &#38;m);
+	while (n &lt; 1 || n &gt; MAX_N || m &lt; 1 || m &gt; MAX_N) printf(&#34;...&#34;);
+	for (int i = 0; i &lt; n; ++i) {
+		scanf_s(&#34;%s&#34;, buf, 1000);
+		for (int j = 0; j &lt; m; ++j) {
+			if (buf[j] == &#39;1&#39;) {
+				grid[i][j] = 1;
+				counts[i]++;
+			}
+		}
+	}
+	calc();
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,101 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2726">2726</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 336K</td><td width=10px></td><td><b>Time:</b> 141MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	10000
+
+
+int n;
+int D[MAX_N];
+int C[MAX_N];
+int ranks1[MAX_N];
+int ranks2[MAX_N];
+bool states1[MAX_N];
+bool states2[MAX_N];
+
+
+bool Less1(int a, int b)
+{
+	if (D[a] &lt; D[b]) return true;
+	if (D[a] &gt; D[b]) return false;
+	return C[a] &gt; C[b];
+}
+
+
+bool Less2(int a, int b)
+{
+	if (C[a] &lt; C[b]) return true;
+	if (C[a] &gt; C[b]) return false;
+	return D[a] &gt; D[b];
+}
+
+
+int calc()
+{
+	memset(states1, 0, sizeof(states1));
+	memset(states2, 0, sizeof(states2));
+
+	sort(ranks1, ranks1 + n, Less1);
+	sort(ranks2, ranks2 + n, Less2);
+
+	int m = INT_MAX;
+	for (int i = 0; i &lt; n; ++i) {
+		int idx = ranks1[i];
+		if (C[idx] &lt; m) {
+			states1[idx] = true;
+			m = C[idx];
+		}
+	}
+
+	m = INT_MAX;
+	for (int i = 0; i &lt; n; ++i) {
+		int idx = ranks2[i];
+		if (D[idx] &lt; m) {
+			states2[idx] = true;
+			m = D[idx];
+		}
+	}
+
+	int count = 0;
+	for (int i = 0; i &lt; n; ++i) {
+		if (states1[i] &#38;&#38; states2[i]) {
+			++count;
+		}
+	}
+
+	return count;
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d&#34;, &#38;n);
+		if (!n) break;
+
+		for (int i = 0; i &lt; n; ++i) {
+			scanf_s(&#34;%d %d&#34;, &#38;D[i], &#38;C[i]);
+			ranks1[i] = ranks2[i] = i;
+		}
+
+		printf(&#34;%d\n&#34;, calc());
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

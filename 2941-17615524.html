@@ -1,0 +1,60 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2941">2941</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 4120K</td><td width=10px></td><td><b>Time:</b> 1204MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#define MAX_N	1000
+
+
+int n;
+int matrix[MAX_N][MAX_N];
+
+
+bool calc()
+{
+	for (int i = 1; i &lt; n; ++i) {
+		int d = matrix[i][0] - matrix[i - 1][0];
+		for (int j = 1; j &lt; n; ++j) {
+			if (d != matrix[i][j] - matrix[i - 1][j]) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d&#34;, &#38;n);
+		if (!n) break;
+
+		for (int i = 0; i &lt; n; ++i) {
+			for (int j = 0; j &lt; n; ++j) {
+				scanf_s(&#34;%d&#34;, &#38;matrix[i][j]);
+			}
+		}
+
+		if (calc()) {
+			printf(&#34;homogeneous\n&#34;);
+		}
+		else {
+			printf(&#34;not homogeneous\n&#34;);
+		}
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

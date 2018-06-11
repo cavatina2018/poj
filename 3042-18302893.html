@@ -1,0 +1,113 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3042">3042</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 7676K</td><td width=10px></td><td><b>Time:</b> 63MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	1000
+
+
+int n;
+long long l;
+long long pos[MAX_N];
+bool states[MAX_N][MAX_N][2];
+long long results[MAX_N][MAX_N][2];
+
+
+long long calc(int left, int right, int type)
+{
+	if (left &gt;= 0 &#38;&#38; left &lt; n &#38;&#38; right &gt;= 0 &#38;&#38; right &lt; n &#38;&#38; states[left][right][type]) {
+		return results[left][right][type];
+	}
+
+	long long res = LLONG_MAX;
+	if (type == 0) {
+		int leftcount = left;
+		int rightcount = n - right;
+
+		if (left &gt; 0) {
+			long long ret = (leftcount + rightcount) * (pos[left] - pos[left - 1]) + calc(left - 1, right, 0);
+			if (ret &lt; res) res = ret;
+		}
+		if (right &lt; n) {
+			long long ret = (leftcount + rightcount) * (pos[right] - pos[left]) + calc(left &gt; 0 ? left - 1 : -1, right, 1);
+			if (ret &lt; res) res = ret;
+		}
+	}
+	else {
+		int leftcount = left + 1;
+		int rightcount = n - 1 - right;
+
+		if (right &lt; n - 1) {
+			long long ret = (leftcount + rightcount) * (pos[right + 1] - pos[right]) + calc(left, right + 1, 1);
+			if (ret &lt; res) res = ret;
+		}
+		if (left &gt;= 0) {
+			long long ret = (leftcount + rightcount) * (pos[right] - pos[left]) + calc(left, right &lt; n - 1 ? right + 1 : n, 0);
+			if (ret &lt; res) res = ret;
+		}
+	}
+
+	if (res == LLONG_MAX) res = 0;
+
+	if (left &gt;= 0 &#38;&#38; left &lt; n &#38;&#38; right &gt;= 0 &#38;&#38; right &lt; n) {
+		results[left][right][type] = res;
+		states[left][right][type] = true;
+	}
+
+	//printf(&#34;%d %d %d %lld\n&#34;, left, right, type, res);
+	return res;
+}
+
+
+long long calc()
+{
+	sort(pos, pos + n);
+
+	int idx = lower_bound(pos, pos + n, l) - pos;
+	if (idx &gt;= n) {
+		long long res = n * (l - pos[n - 1]) + calc(n - 2, n - 1, 1);
+		return res;
+	}
+	else if (pos[idx] == l) {
+		long long res = calc(idx - 1, idx, 1);
+		return res;
+	}
+	else {
+		long long res = LLONG_MAX;
+		if (idx &gt; 0) {
+			long long ret = n * (l - pos[idx - 1]) + calc(idx - 1, idx, 0);
+			if (ret &lt; res) res = ret;
+		}
+		if (idx &lt; n) {
+			long long ret = n * (pos[idx] - l) + calc(idx - 1, idx, 1);
+			if (ret &lt; res) res = ret;
+		}
+		return res;
+	}
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %lld&#34;, &#38;n, &#38;l);
+	while (n &gt; MAX_N) printf(&#34;...&#34;);
+
+	for (int i = 0; i &lt; n; ++i) {
+		scanf_s(&#34;%lld&#34;, &#38;pos[i]);
+	}
+	printf(&#34;%lld\n&#34;, calc());
+    return 0;
+}</pre>
+</ul>
+</body></html>

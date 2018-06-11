@@ -1,0 +1,114 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2705">2705</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 188K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	100
+
+
+int pos[MAX_N + 1];
+int width[MAX_N + 1];
+int shelf[MAX_N + 1];
+int s;
+
+
+void add(int id, int start)
+{
+	if (pos[id] &gt; 0) {
+		for (int i = pos[id]; i &lt; pos[id] + width[id]; ++i) {
+			shelf[i] = 0;
+		}
+	}
+
+	for (int i = max(1, pos[id]); i &lt; min(start + width[id], s + 1); ++i) {
+		if (shelf[i] == 0) continue;
+		add(shelf[i], start + width[id]);
+		break;
+	}
+
+	if (start + width[id] &lt;= s + 1) {
+		for (int i = start; i &lt; start + width[id]; ++i) {
+			shelf[i] = id;
+		}
+		pos[id] = start;
+	}
+	else {
+		pos[id] = 0;
+	}
+}
+
+
+void del(int id)
+{
+	if (pos[id] &gt; 0) {
+		for (int i = pos[id]; i &lt; pos[id] + width[id]; ++i) {
+			shelf[i] = 0;
+		}
+		pos[id] = 0;
+	}
+}
+
+
+void show()
+{
+	for (int i = 1, prev = 0; i &lt;= s; ++i) {
+		if (shelf[i] != prev) {
+			if (shelf[i] != 0) {
+				printf(&#34;%d &#34;, shelf[i]);
+			}
+			prev = shelf[i];
+		}
+	}
+	printf(&#34;\n&#34;);
+}
+
+
+int main()
+{
+	int t = 0;
+
+	while (true) {
+		memset(pos, 0, sizeof(pos));
+		memset(width, 0, sizeof(width));
+		memset(shelf, 0, sizeof(shelf));
+
+		scanf_s(&#34;%d&#34;, &#38;s);
+		if (s &lt; 0) break;
+
+		char op[10];
+		while (true) {
+			scanf_s(&#34;%s&#34;, op, 10);
+			if (op[0] == &#39;A&#39;) {
+				int id, w; scanf_s(&#34;%d %d&#34;, &#38;id, &#38;w);
+				width[id] = w;
+				add(id, 1);
+			}
+			else if (op[0] == &#39;R&#39;) {
+				int id; scanf_s(&#34;%d&#34;, &#38;id);
+				del(id);
+			}
+			else {
+				printf(&#34;PROBLEM %d: &#34;, ++t);
+				show();
+				break;
+			}
+		}
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

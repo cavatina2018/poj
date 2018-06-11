@@ -1,0 +1,105 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2589">2589</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 188K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;stdlib.h&gt;
+#define MAX_N	500
+
+
+char jane[2][1001];
+char john[2][1001];
+int janecounts[2];
+int johncounts[2];
+
+
+void reverse(char* p, int count)
+{
+	for (char* a = p, *b = p + count - 1; a &lt;= b; ++a, --b) {
+		char c = *a;
+		*a = *b;
+		*b = c;
+	}
+}
+
+
+int main()
+{
+	scanf_s(&#34;%s %s&#34;, jane[0], 101, john[0], 101);
+	janecounts[0] = strlen(jane[0]);
+	johncounts[0] = strlen(john[0]);
+	reverse(jane[0], janecounts[0]);
+	reverse(john[0], johncounts[0]);
+
+	for (int i = 1; i &lt;= 1000; ++i) {
+		if (janecounts[0] == 0) {
+			while (janecounts[1] &gt; 0) {
+				jane[0][janecounts[0]++] = jane[1][--janecounts[1]];
+			}
+		}
+		if (johncounts[0] == 0) {
+			while (johncounts[1] &gt; 0) {
+				john[0][johncounts[0]++] = john[1][--johncounts[1]];
+			}
+		}
+
+		jane[1][janecounts[1]++] = jane[0][--janecounts[0]];
+		john[1][johncounts[1]++] = john[0][--johncounts[0]];
+
+		if (jane[1][janecounts[1] - 1] == john[1][johncounts[1] - 1]) {
+			if (rand() / 99 % 2) {
+				
+				for (int j = 0; j &lt; janecounts[1]; ++j) {
+					john[1][johncounts[1]++] = jane[1][j];
+				}
+				janecounts[1] = 0;
+
+				printf(&#34;Snap! for John: &#34;);
+				for (int j = johncounts[1] - 1; j &gt;= 0 ; --j) {
+					printf(&#34;%c&#34;, john[1][j]);
+				}
+				printf(&#34;\n&#34;);
+
+				if (janecounts[0] == 0) {
+					printf(&#34;John wins.\n&#34;);
+					return 0;
+				}
+			}
+			else {
+				
+				for (int j = 0; j &lt; johncounts[1]; ++j) {
+					jane[1][janecounts[1]++] = john[1][j];
+				}
+				johncounts[1] = 0;
+
+				printf(&#34;Snap! for Jane: &#34;);
+				for (int j = janecounts[1] - 1; j &gt;= 0 ; --j) {
+					printf(&#34;%c&#34;, jane[1][j]);
+				}
+				printf(&#34;\n&#34;);
+
+				if (johncounts[0] == 0) {
+					printf(&#34;Jane wins.\n&#34;);
+					return 0;
+				}
+			}
+		}
+	}
+
+	printf(&#34;Keeps going and going ...\n&#34;);
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,100 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2658">2658</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 212K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+#include &lt;sstream&gt;
+using namespace std;
+
+
+string rhymes[4];
+
+
+string vowel(string&#38; s)
+{
+	string res;
+
+	for (size_t i = 0; i &lt; s.length(); ++i) {
+		if (s[i] &gt;= &#39;A&#39; &#38;&#38; s[i] &lt;= &#39;Z&#39;) {
+			s[i] += &#39;a&#39; - &#39;A&#39;;
+		}
+		if (s[i] == &#39;a&#39; || s[i] == &#39;e&#39; || s[i] == &#39;i&#39; || s[i] == &#39;o&#39; || s[i] == &#39;u&#39;) {
+			res = s[i];
+		}
+	}
+
+	if (res.length() == 0) {
+		res = s;
+	}
+
+	return res;
+}
+
+
+void calc()
+{
+	if (rhymes[0] == rhymes[1] &#38;&#38;
+		rhymes[0] == rhymes[2] &#38;&#38;
+		rhymes[0] == rhymes[3]) {
+		printf(&#34;perfect\n&#34;);
+		return;
+	}
+
+	if (rhymes[0] == rhymes[1] &#38;&#38;
+		rhymes[3] == rhymes[2]) {
+		printf(&#34;even\n&#34;);
+		return;
+	}
+
+	if (rhymes[0] == rhymes[2] &#38;&#38;
+		rhymes[1] == rhymes[3]) {
+		printf(&#34;cross\n&#34;);
+		return;
+	}
+
+	if (rhymes[0] == rhymes[3] &#38;&#38;
+		rhymes[1] == rhymes[2]) {
+		printf(&#34;shell\n&#34;);
+		return;
+	}
+
+	printf(&#34;free\n&#34;);
+	return;
+}
+
+
+int main()
+{
+	char buf[1000];
+
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	cin.getline(buf, 1000);
+
+	for (int i = 0; i &lt; t; ++i) {
+		for (int j = 0; j &lt; 4; ++j) {
+			cin.getline(buf, 1000);
+
+			stringstream ss;
+			ss.str(buf);
+
+			string s;
+			while (ss &gt;&gt; s);
+
+			rhymes[j] = vowel(s);
+		}
+
+		calc();
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

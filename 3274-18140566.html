@@ -1,0 +1,127 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3274">3274</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 24036K</td><td width=10px></td><td><b>Time:</b> 1063MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;time.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	100000
+#define MAX_K	30
+
+
+int n, k;
+long long features[MAX_N + 1];
+long long sums[MAX_K][MAX_N + 1];
+int ranks[MAX_N + 1];
+int result;
+int level;
+
+
+void init()
+{
+	long long m = 1LL | (1LL &lt;&lt; 32);
+	for (int j = 1; j &lt; k; ++j) {
+		sums[j][0] = 0;
+
+		for (int i = 1; i &lt;= n; ++i) {
+			long long a = 0;
+			if (features[i] &#38; 1) {
+				a |= 1;
+			}
+			if (features[i] &#38; (1LL &lt;&lt; j)) {
+				a |= (1LL &lt;&lt; 32);
+			}
+			sums[j][i] = (sums[j][i - 1] + a) % m;
+		}
+	}
+
+	for (int i = 0; i &lt;= n; ++i) {
+		ranks[i] = i;
+	}
+
+	result = 0;
+}
+
+
+bool Less(int a, int b)
+{
+	if (sums[level][a] &lt; sums[level][b]) return true;
+	if (sums[level][a] &gt; sums[level][b]) return false;
+	return a &lt; b;
+}
+
+
+void calc(int lev, int s, int e)
+{
+	if (lev &gt;= k) {
+		int a = ranks[e - 1] - ranks[s];
+		if (a &gt; result) {
+			result = a;
+		}
+		return;
+	}
+
+	level = lev;
+	sort(ranks + s, ranks + e, Less);
+
+	int res = 0;
+	for (int i = s; i &lt; e;) {
+		int s = i;
+		long long v = sums[lev][ranks[i]];
+		for (; i &lt; e; ++i) {
+			if (sums[lev][ranks[i]] != v) {
+				break;
+			}
+		}	
+		calc(lev + 1, s, i);
+	}
+}
+
+
+void test()
+{
+	time_t b = time(NULL);
+
+	for (int t = 0; ; ++t) {
+		n = MAX_N;
+		k = rand() % MAX_K + 1;
+
+		for (int i = 1; i &lt;= n; ++i) {
+			features[i] = rand() % (1 &lt;&lt; k);
+		}
+
+		init();
+		calc(1, 0, n + 1);
+		printf(&#34;%d\n&#34;, result);
+	}
+
+	printf(&#34;%llu\n&#34;, time(NULL) - b);
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d&#34;, &#38;n, &#38;k);
+	for (int i = 1; i &lt;= n; ++i) {
+		scanf_s(&#34;%lld&#34;, &#38;features[i]);
+	}
+
+	init();
+	calc(1, 0, n + 1);
+	printf(&#34;%d\n&#34;, result);
+    return 0;
+}</pre>
+</ul>
+</body></html>

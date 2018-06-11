@@ -1,0 +1,81 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3282">3282</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 316K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+
+int l, m;
+queue&lt;int&gt; leftq, rightq;
+
+
+int calc()
+{
+	int pos = 0, res = 0;
+
+	while (!leftq.empty() || !rightq.empty()) {
+		if (pos == 0 &#38;&#38; !leftq.empty()) {
+			int ferry = 0;
+			while (!leftq.empty()) {
+				if (ferry + leftq.front() &gt; l) {
+					break;
+				}
+				ferry += leftq.front();
+				leftq.pop();
+			}
+		}
+		else if (pos == 1 &#38;&#38; !rightq.empty()) {
+			int ferry = 0;
+			while (!rightq.empty()) {
+				if (ferry + rightq.front() &gt; l) {
+					break;
+				}
+				ferry += rightq.front();
+				rightq.pop();
+			}
+		}
+		++res;
+		pos = (pos + 1) % 2;
+	}
+
+	return res;
+}
+
+
+int main()
+{
+	char buffer[10];
+
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		scanf_s(&#34;%d %d&#34;, &#38;l, &#38;m);
+		l *= 100;
+
+		for (int j = 0; j &lt; m; ++j) {
+			int car; scanf_s(&#34;%d %s&#34;, &#38;car, buffer, 10);
+			if (!strcmp(buffer, &#34;left&#34;)) {
+				leftq.push(car);
+			}
+			else {
+				rightq.push(car);
+			}
+		}
+		printf(&#34;%d\n&#34;, calc());
+	}
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

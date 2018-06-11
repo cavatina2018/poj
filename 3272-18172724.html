@@ -1,0 +1,121 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3272">3272</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 428K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	5000
+#define MAX_M	50000
+
+
+int n, m;
+struct Edge
+{
+	int from;
+	int to;
+	int next;
+};
+Edge fedges[MAX_M + 1];
+Edge bedges[MAX_M + 1];
+int firstfedges[MAX_N + 1];
+int firstbedges[MAX_N + 1];
+bool fstates[MAX_N + 1];
+long long fresults[MAX_N + 1];
+bool bstates[MAX_N + 1];
+long long bresults[MAX_N + 1];
+
+
+long long calcf(int node)
+{
+	if (fstates[node]) return fresults[node];
+
+	long long res = 0;
+	if (node == n) {
+		res = 1;
+	}
+	else {
+		for (int i = firstfedges[node]; i &gt; 0; i = fedges[i].next) {
+			int next = fedges[i].to;
+			res += calcf(next);
+		}
+	}
+
+	fresults[node] = res;
+	fstates[node] = true;
+	return res;
+}
+
+
+long long calcb(int node)
+{
+	if (bstates[node]) return bresults[node];
+
+	long long res = 0;
+	if (!firstbedges[node]) {
+		res = 1;
+	}
+	else {
+		for (int i = firstbedges[node]; i &gt; 0; i = bedges[i].next) {
+			int next = bedges[i].to;
+			res += calcb(next);
+		}
+	}
+
+	bresults[node] = res;
+	bstates[node] = true;
+	return res;
+}
+
+
+long long calc()
+{
+	for (int i = 1; i &lt;= n; ++i) {
+		calcf(i);
+		calcb(i);
+	}
+
+	long long res = 0;
+	for (int i = 1; i &lt;= m; ++i) {
+		int a = fedges[i].from, b = fedges[i].to;
+		long long ret = calcb(a) * calcf(b);
+		if (ret &gt; res) res = ret;
+	}
+
+	return res;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d&#34;, &#38;n, &#38;m);
+	while (n &lt; 1 || n &gt; MAX_N || m &lt; 0 || m &gt; MAX_M) {
+		printf(&#34;...&#34;);
+	}
+	for (int i = 1; i &lt;= m; ++i) {
+		int a, b; scanf_s(&#34;%d %d&#34;, &#38;a, &#38;b);
+		fedges[i].from = a;
+		fedges[i].to = b;
+		fedges[i].next = firstfedges[a];
+		firstfedges[a] = i;
+
+		bedges[i].from = b;
+		bedges[i].to = a;
+		bedges[i].next = firstbedges[b];
+		firstbedges[b] = i;
+	}
+	printf(&#34;%lld\n&#34;, calc());
+    return 0;
+}
+
+</pre>
+</ul>
+</body></html>

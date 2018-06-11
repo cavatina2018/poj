@@ -1,0 +1,75 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2895">2895</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 136K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+
+
+int keys[256];
+int times[256];
+int p, w;
+char buf[2000];
+
+
+void init()
+{
+	keys[&#39; &#39;] = 1;
+	keys[&#39;A&#39;] = keys[&#39;B&#39;] = keys[&#39;C&#39;] = 2;
+	keys[&#39;D&#39;] = keys[&#39;E&#39;] = keys[&#39;F&#39;] = 3;
+	keys[&#39;G&#39;] = keys[&#39;H&#39;] = keys[&#39;I&#39;] = 4;
+	keys[&#39;J&#39;] = keys[&#39;K&#39;] = keys[&#39;L&#39;] = 5;
+	keys[&#39;M&#39;] = keys[&#39;N&#39;] = keys[&#39;O&#39;] = 6;
+	keys[&#39;P&#39;] = keys[&#39;Q&#39;] = keys[&#39;R&#39;] = keys[&#39;S&#39;] = 7;
+	keys[&#39;T&#39;] = keys[&#39;U&#39;] = keys[&#39;V&#39;] = 8;
+	keys[&#39;W&#39;] = keys[&#39;X&#39;] = keys[&#39;Y&#39;] = keys[&#39;Z&#39;] = 9;
+	
+	times[&#39; &#39;] = times[&#39;A&#39;] = times[&#39;D&#39;] = times[&#39;G&#39;] = times[&#39;J&#39;] = times[&#39;M&#39;] = times[&#39;P&#39;] = times[&#39;T&#39;] = times[&#39;W&#39;] = 1;
+	times[&#39;B&#39;] = times[&#39;E&#39;] = times[&#39;H&#39;] = times[&#39;K&#39;] = times[&#39;N&#39;] = times[&#39;Q&#39;] = times[&#39;U&#39;] = times[&#39;X&#39;] = 2;
+	times[&#39;C&#39;] = times[&#39;F&#39;] = times[&#39;I&#39;] = times[&#39;L&#39;] = times[&#39;O&#39;] = times[&#39;R&#39;] = times[&#39;V&#39;] = times[&#39;Y&#39;] = 3;
+	times[&#39;S&#39;] = times[&#39;Z&#39;] = 4;
+}
+
+
+int calc()
+{
+	int res = 0;
+	for (int i = 0, prevkey = 0; buf[i]; ++i) {
+		res += times[buf[i]] * p;
+		if (keys[buf[i]] == prevkey &#38;&#38; prevkey != 1) {
+			res += w;
+		}
+		else {
+			prevkey = keys[buf[i]];
+		}
+	}
+	return res;
+}
+
+
+int main()
+{
+	init();
+
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		scanf_s(&#34;%d %d&#34;, &#38;p, &#38;w);
+		gets_s(buf, 2000);
+		gets_s(buf, 2000);
+
+		printf(&#34;%d\n&#34;, calc());
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

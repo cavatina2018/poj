@@ -1,0 +1,147 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2926">2926</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 4852K</td><td width=10px></td><td><b>Time:</b> 1235MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;time.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	100000
+
+
+int n;
+double X[MAX_N][5];
+double values[MAX_N];
+int m;
+
+
+double calc1()
+{
+	double res = 0;
+
+	for (int i = 0; i &lt; n; ++i) {
+		for (int j = i + 1; j &lt; n; ++j) {
+			double ret = abs(X[i][0] - X[j][0]) +
+				abs(X[i][1] - X[j][1]) +
+				abs(X[i][2] - X[j][2]) +
+				abs(X[i][3] - X[j][3]) +
+				abs(X[i][4] - X[j][4]);
+			if (ret &gt; res) res = ret;
+		}
+	}
+	return res;
+}
+
+
+inline double value(int idx)
+{
+	double res = X[idx][0];
+
+	if (m &#38; 1) {
+		res -= X[idx][1];
+	}
+	else {
+		res += X[idx][1];
+	}
+
+	if (m &#38; 2) {
+		res -= X[idx][2];
+	}
+	else {
+		res += X[idx][2];
+	}
+
+	if (m &#38; 4) {
+		res -= X[idx][3];
+	}
+	else {
+		res += X[idx][3];
+	}
+
+	if (m &#38; 8) {
+		res -= X[idx][4];
+	}
+	else {
+		res += X[idx][4];
+	}
+
+	return res;
+}
+
+
+double calc2()
+{
+	double res = 0;
+
+	for (m = 0; m &lt; 16; ++m) {
+		for (int i = 0; i &lt; n; ++i) {
+			values[i] = value(i);
+		}
+
+		sort(values, values + n);
+
+		double ret = values[n - 1] - values[0];
+		if (ret &gt; res) res = ret;
+	}
+
+	return res;
+}
+
+
+void test()
+{
+	time_t t = time(NULL);
+
+	for (int i = 0; i &lt; 100000; ++i) {
+		n = 100;// MAX_N;
+		for (int j = 0; j &lt; n; ++j) {
+			for (int k = 0; k &lt; 5; ++k) {
+				X[j][k] = rand();
+			}
+		}
+
+#if 1
+		double ret1 = calc1();
+		double ret2 = calc2();
+		if (ret1 != ret2) {
+			printf(&#34;test failed\n&#34;);
+			getchar();
+		}
+		else {
+			printf(&#34;%d\n&#34;, i);
+		}
+#else
+		printf(&#34;%.2lf\n&#34;, calc2());
+#endif
+	}
+
+	printf(&#34;%llu\n&#34;, time(NULL) - t);
+}
+
+
+
+int main()
+{
+	scanf_s(&#34;%d&#34;, &#38;n);
+	while (n &lt; 1 || n &gt; MAX_N) printf(&#34;...&#34;);
+
+	for (int j = 0; j &lt; n; ++j) {
+		for (int k = 0; k &lt; 5; ++k) {
+			scanf_s(&#34;%lf&#34;, &#38;X[j][k]);
+		}
+	}
+	printf(&#34;%.2lf\n&#34;, calc2());
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

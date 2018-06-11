@@ -1,0 +1,83 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2833">2833</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 220K</td><td width=10px></td><td><b>Time:</b> 2516MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;queue&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	5000000
+#define MAX_M	10
+
+
+int n1, n2, n;
+int great[MAX_M];
+int least[MAX_M];
+
+
+void add_great(int v)
+{
+	for (int i = 0; i &lt; n1; ++i) {
+		if (great[i] &lt; v) {
+			for (int j = n1 - 1; j &gt; i; --j) {
+				great[j] = great[j - 1];
+			}
+			great[i] = v;
+			return;
+		}
+	}
+}
+
+
+void add_least(int v)
+{
+	for (int i = 0; i &lt; n2; ++i) {
+		if (least[i] &gt; v) {
+			for (int j = n2 - 1; j &gt; i; --j) {
+				least[j] = least[j - 1];
+			}
+			least[i] = v;
+			return;
+		}
+	}
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d %d %d&#34;, &#38;n1, &#38;n2, &#38;n);
+		if (!n1 &#38;&#38; !n2 &#38;&#38; !n) break;
+
+		double sum = 0.0;
+		fill(great, great + n1, 0);
+		fill(least, least + n2, INT_MAX);
+
+		for (int i = 0; i &lt; n; ++i) {
+			int v; scanf_s(&#34;%d&#34;, &#38;v);
+			sum += v;
+			add_great(v);
+			add_least(v);
+		}
+
+		for (int i = 0; i &lt; n1; ++i) {
+			sum -= great[i];
+		}
+		for (int i = 0; i &lt; n2; ++i) {
+			sum -= least[i];
+		}
+		printf(&#34;%.6lf\n&#34;, sum / (n - n1 - n2));
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

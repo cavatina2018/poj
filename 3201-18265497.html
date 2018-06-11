@@ -1,0 +1,314 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3201">3201</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 276K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	1000
+
+
+char drawing[MAX_N][MAX_N + 1];
+
+
+struct Rect
+{
+	int row;
+	int col;
+	int rcount;
+	int ccount;
+	int dir;
+};
+
+
+struct TreeNode
+{
+	int type;
+	TreeNode* left;
+	TreeNode* right;
+	int leftwidth;
+	int rightwidth;
+
+	TreeNode()
+	{
+		type = 0;
+		left = right = NULL;
+		leftwidth = rightwidth = 0;
+	}
+
+	~TreeNode()
+	{
+		if (left) delete left;
+		if (right) delete right;
+	}
+
+	bool getsize(int&#38; n, int&#38; m)
+	{
+		if (type == 0 || type == 1) {
+			n = m = 2;
+			return true;
+		}
+
+		if (type == 2) {
+			int n1 = 0, m1 = 0;
+			if (!left-&gt;getsize(n1, m1)) {
+				return false;
+			}
+			n = m1, m = n1;
+			return true;
+		}
+		else {
+			int n1 = 0, m1 = 0;
+			if (!left-&gt;getsize(n1, m1)) {
+				return false;
+			}
+
+			int n2 = 0, m2 = 0;
+			if (!right-&gt;getsize(n2, m2)) {
+				return false;
+			}
+
+			if (n1 != n2) return false;
+
+			n = n1, m = m1 + m2;
+			leftwidth = m1, rightwidth = m2;
+			return true;
+		}
+	}
+
+	void draw(Rect&#38; rc)
+	{
+		if (rc.dir == 0) {
+			if (type == 0) {
+				drawing[rc.row][rc.col] = &#39;/&#39;;
+				drawing[rc.row][rc.col + 1] = &#39;/&#39;;
+				drawing[rc.row + 1][rc.col] = &#39;/&#39;;
+				drawing[rc.row + 1][rc.col + 1] = &#39;+&#39;;
+			}
+			else if (type == 1) {
+				drawing[rc.row][rc.col] = &#39;-&#39;;
+				drawing[rc.row][rc.col + 1] = &#39;-&#39;;
+				drawing[rc.row + 1][rc.col] = &#39;-&#39;;
+				drawing[rc.row + 1][rc.col + 1] = &#39;-&#39;;
+			}
+			else if (type == 2) {
+				Rect rc2 = rc;
+				rc2.dir = 1;
+				left-&gt;draw(rc2);
+			}
+			else {
+				Rect rc1 = rc, rc2 = rc;
+				rc1.ccount = leftwidth;
+				rc2.ccount = rightwidth;
+				rc2.col = rc1.col + rc1.ccount;
+				left-&gt;draw(rc1);
+				right-&gt;draw(rc2);
+			}
+		}
+		else if (rc.dir == 1) {
+			if (type == 0) {
+				drawing[rc.row][rc.col] = &#39;\\&#39;;
+				drawing[rc.row][rc.col + 1] = &#39;\\&#39;;
+				drawing[rc.row + 1][rc.col] = &#39;+&#39;;
+				drawing[rc.row + 1][rc.col + 1] = &#39;\\&#39;;
+			}
+			else if (type == 1) {
+				drawing[rc.row][rc.col] = &#39;|&#39;;
+				drawing[rc.row][rc.col + 1] = &#39;|&#39;;
+				drawing[rc.row + 1][rc.col] = &#39;|&#39;;
+				drawing[rc.row + 1][rc.col + 1] = &#39;|&#39;;
+			}
+			else if (type == 2) {
+				Rect rc2 = rc;
+				rc2.dir = 2;
+				left-&gt;draw(rc2);
+			}
+			else {
+				Rect rc1 = rc, rc2 = rc;
+				rc1.rcount = leftwidth;
+				rc2.rcount = rightwidth;
+				rc2.row = rc1.row + rc1.rcount;
+				left-&gt;draw(rc1);
+				right-&gt;draw(rc2);
+			}
+		}
+		else if (rc.dir == 2) {
+			if (type == 0) {
+				drawing[rc.row][rc.col] = &#39;+&#39;;
+				drawing[rc.row][rc.col + 1] = &#39;/&#39;;
+				drawing[rc.row + 1][rc.col] = &#39;/&#39;;
+				drawing[rc.row + 1][rc.col + 1] = &#39;/&#39;;
+			}
+			else if (type == 1) {
+				drawing[rc.row][rc.col] = &#39;-&#39;;
+				drawing[rc.row][rc.col + 1] = &#39;-&#39;;
+				drawing[rc.row + 1][rc.col] = &#39;-&#39;;
+				drawing[rc.row + 1][rc.col + 1] = &#39;-&#39;;
+			}
+			else if (type == 2) {
+				Rect rc2 = rc;
+				rc2.dir = 3;
+				left-&gt;draw(rc2);
+			}
+			else {
+				Rect rc1 = rc, rc2 = rc;
+				rc1.ccount = rightwidth;
+				rc2.ccount = leftwidth;
+				rc2.col = rc1.col + rc1.ccount;
+				left-&gt;draw(rc2);
+				right-&gt;draw(rc1);
+			}
+		}
+		else {
+			if (type == 0) {
+				drawing[rc.row][rc.col] = &#39;\\&#39;;
+				drawing[rc.row][rc.col + 1] = &#39;+&#39;;
+				drawing[rc.row + 1][rc.col] = &#39;\\&#39;;
+				drawing[rc.row + 1][rc.col + 1] = &#39;\\&#39;;
+			}
+			else if (type == 1) {
+				drawing[rc.row][rc.col] = &#39;|&#39;;
+				drawing[rc.row][rc.col + 1] = &#39;|&#39;;
+				drawing[rc.row + 1][rc.col] = &#39;|&#39;;
+				drawing[rc.row + 1][rc.col + 1] = &#39;|&#39;;
+			}
+			else if (type == 2) {
+				Rect rc2 = rc;
+				rc2.dir = 0;
+				left-&gt;draw(rc2);
+			}
+			else {
+				Rect rc1 = rc, rc2 = rc;
+				rc1.rcount = rightwidth;
+				rc2.rcount = leftwidth;
+				rc2.row = rc1.row + rc1.rcount;
+				left-&gt;draw(rc2);
+				right-&gt;draw(rc1);
+			}
+		}
+	}
+};
+
+
+void space()
+{
+	char ch = getchar();
+	while (ch == &#39; &#39; || ch == &#39;\n&#39; || ch == &#39;\r&#39; || ch == &#39;\t&#39;)
+	{
+		ch = getchar();
+	}
+	ungetc(ch, stdin);
+}
+
+
+TreeNode* exp()
+{
+	TreeNode* res = new TreeNode();
+
+	space();
+	char ch = getchar();
+	if (ch == &#39;A&#39;) {
+		res-&gt;type = 0;
+	}
+	else if (ch == &#39;B&#39;) {
+		res-&gt;type = 1;
+	}
+	else if (ch == &#39;t&#39;) {
+		getchar();
+		getchar();
+		getchar();
+		space();
+		getchar();
+
+		res-&gt;type = 2;
+		res-&gt;left = exp();
+
+		space();
+		getchar();
+	}
+	else {
+		getchar();
+		getchar();
+		space();
+		getchar();
+
+		res-&gt;type = 3;
+		res-&gt;left = exp();
+		space();
+		getchar();
+
+		res-&gt;right = exp();
+		space();
+		getchar();
+	}
+	return res;
+}
+
+
+TreeNode* statement()
+{
+	TreeNode* ret = exp();
+	space();
+	getchar();
+	space();
+	return ret;
+}
+
+
+void calc(TreeNode* root)
+{
+	int n = 0, m = 0;
+	if (!root-&gt;getsize(n, m)) {
+		printf(&#34;error\n&#34;);
+		return;
+	}
+
+	while (n &gt; MAX_N || m &gt; MAX_N) printf(&#34;...&#34;);
+
+	Rect rc;
+	rc.row = rc.col = 0;
+	rc.rcount = n;
+	rc.ccount = m;
+	rc.dir = 0;
+	root-&gt;draw(rc);
+
+	for (int i = 0; i &lt; n; ++i) {
+		drawing[i][m] = 0;
+		printf(&#34;%s\n&#34;, drawing[i]);
+	}
+}
+
+
+int main()
+{
+	int e = 0;
+
+	while (true)
+	{
+		space();
+		char ch = getchar();
+		if (ch == EOF) break;
+		ungetc(ch, stdin);
+
+		printf(&#34;Quilt %d:\n&#34;, ++e);
+
+		TreeNode* root = statement();
+		calc(root);
+		delete root;
+	}
+	return 0;
+}
+
+
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,92 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2631">2631</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 772K</td><td width=10px></td><td><b>Time:</b> 79MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+#define MAX_N	10000
+vector&lt;pair&lt;int, int&gt; &gt; roads[MAX_N + 1];
+bool visited[MAX_N + 1];
+vector&lt;pair&lt;int, int&gt; &gt; children[MAX_N + 1];
+int m;
+
+
+void dfs(int node)
+{
+	visited[node] = true;
+
+	for (int i = 0; i &lt; roads[node].size(); ++i)
+	{
+		int j = roads[node][i].first, k = roads[node][i].second;
+		if (!visited[j])
+		{
+			children[node].push_back(make_pair(j, k));
+			dfs(j);
+		}
+	}
+}
+
+
+void calc(int node, int&#38; a, int&#38; b)
+{
+	a = b = 0;
+
+	for (int i = 0; i &lt; children[node].size(); ++i)
+	{
+		int j = children[node][i].first, k = children[node][i].second;
+
+		int c, d;
+		calc(j, c, d);
+
+		if (c + d &gt; m) m = c + d;
+
+		int len = c + k;
+		if (len &gt;= a)
+		{
+			b = a;
+			a = len;
+		}
+		else if (len &gt; b)
+		{
+			b = len;
+		}
+	}
+}
+
+
+int main()
+{
+	int i, j, k;
+	while(true)
+	{
+		if (scanf_s(&#34;%d %d %d&#34;, &#38;i, &#38;j, &#38;k) &lt;= 0)
+		{
+			break;
+		}
+		roads[i].push_back(make_pair(j, k));
+		roads[j].push_back(make_pair(i, k));
+	}
+
+	dfs(1);
+
+	int a, b;
+	calc(1, a, b);
+
+	if (a + b &gt; m) m = a + b;
+
+	printf(&#34;%d\n&#34;, m);
+    return 0;
+}</pre>
+</ul>
+</body></html>

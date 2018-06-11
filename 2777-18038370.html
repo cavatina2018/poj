@@ -1,0 +1,199 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2777">2777</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 3240K</td><td width=10px></td><td><b>Time:</b> 360MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	100000
+#define MAX_T	30
+
+
+int L, T, O;
+
+
+struct TreeNode
+{
+	static TreeNode* buffer[32];
+
+	int level;
+	int start;
+	int len;
+	int mask;
+	TreeNode* left;
+	TreeNode* right;
+
+
+	static TreeNode* CreateTreeNode(int level, int s, int l)
+	{
+		TreeNode* node = buffer[level] + (s / l);
+		node-&gt;level = level;
+		node-&gt;start = s;
+		node-&gt;len = l;
+		node-&gt;mask = 0;
+		node-&gt;left = node-&gt;right = 0;
+		return node;
+	}
+
+
+	void add(int color, int s, int e)
+	{
+		if (e - s &gt;= len) {
+			mask = color;
+			left = right = NULL;
+			return;
+		}
+
+		int len2 = len / 2;
+
+		if (!left) {
+			left = CreateTreeNode(level + 1, start, len2);
+			left-&gt;mask = mask;
+		}
+		if (!right) {
+			right = CreateTreeNode(level + 1, start + len2, len2);
+			right-&gt;mask = mask;
+		}
+		
+		if (s &lt; start + len2)
+		{	
+			left-&gt;add(color, s, min(e, start + len2));
+		}
+		if(e &gt; start + len2)
+		{	
+			right-&gt;add(color, max(s, start + len2), e);
+		}
+
+		mask = left-&gt;mask | right-&gt;mask;
+	}
+
+
+	int get(int s, int e)
+	{
+		if (!left &#38;&#38; !right) {
+			return mask;
+		}
+		if (e - s &gt;= len) {
+			return mask;
+		}
+
+		int res = 0, len2 = len / 2;
+
+		if (s &lt; start + len2)
+		{
+			res |= left-&gt;get(s, min(e, start + len2));
+		}
+		if (e &gt; start + len2)
+		{
+			res |= right-&gt;get(max(s, start + len2), e);
+		}
+		return res;
+	}
+};
+
+
+TreeNode buf0[1 &lt;&lt; 0];
+TreeNode buf1[1 &lt;&lt; 1];
+TreeNode buf2[1 &lt;&lt; 2];
+TreeNode buf3[1 &lt;&lt; 3];
+TreeNode buf4[1 &lt;&lt; 4];
+TreeNode buf5[1 &lt;&lt; 5];
+TreeNode buf6[1 &lt;&lt; 6];
+TreeNode buf7[1 &lt;&lt; 7];
+TreeNode buf8[1 &lt;&lt; 8];
+TreeNode buf9[1 &lt;&lt; 9];
+TreeNode buf10[1 &lt;&lt; 10];
+TreeNode buf11[1 &lt;&lt; 11];
+TreeNode buf12[1 &lt;&lt; 12];
+TreeNode buf13[1 &lt;&lt; 13];
+TreeNode buf14[1 &lt;&lt; 14];
+TreeNode buf15[1 &lt;&lt; 15];
+TreeNode buf16[1 &lt;&lt; 16];
+TreeNode buf17[1 &lt;&lt; 17];
+
+
+TreeNode* TreeNode::buffer[32] = {
+	buf0,
+	buf1,
+	buf2,
+	buf3,
+	buf4,
+	buf5,
+	buf6,
+	buf7,
+	buf8,
+	buf9,
+	buf10,
+	buf11,
+	buf12,
+	buf13,
+	buf14,
+	buf15,
+	buf16,
+	buf17
+};
+
+
+TreeNode* cache;
+
+
+int main()
+{
+	scanf_s(&#34;%d %d %d&#34;, &#38;L, &#38;T, &#38;O);
+
+	int mask = 1;
+	while (mask &lt; L) {
+		mask *= 2;
+	}
+
+	cache = TreeNode::CreateTreeNode(0, 0, mask);
+	cache-&gt;add(1 &lt;&lt; 0, 0, L);
+
+	char buf[10];
+	for (int i = 0; i &lt; O; ++i) {
+		scanf_s(&#34;%s&#34;, buf, 10);
+		if (buf[0] == &#39;C&#39;) {
+			int a, b, c; scanf_s(&#34;%d %d %d&#34;, &#38;a, &#38;b, &#38;c);
+			--a, --b, --c;
+			if (a &gt; b) {
+				int tmp = a;
+				a = b;
+				b = tmp;
+			}
+			++b;
+		
+			cache-&gt;add(1 &lt;&lt; c, a, b);
+		}
+		else {
+			int a, b; scanf_s(&#34;%d %d&#34;, &#38;a, &#38;b);
+			--a, --b;
+			if (a &gt; b) {
+				int tmp = a;
+				a = b;
+				b = tmp;
+			}
+			++b;
+
+			int mask = cache-&gt;get(a, b), res = 0;
+			for (int i = 0; i &lt; T; ++i) {
+				if (mask &#38; (1 &lt;&lt; i)) {
+					++res;
+				}
+			}
+			printf(&#34;%d\n&#34;, res);
+		}
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

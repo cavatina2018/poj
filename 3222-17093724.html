@@ -1,0 +1,154 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3222">3222</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 6464K</td><td width=10px></td><td><b>Time:</b> 1516MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;vector&gt;
+#include &lt;set&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	20000
+#define MAX_M	100000
+
+
+int n, m;
+pair&lt;int, int&gt; edges[MAX_M];
+vector&lt;int&gt; v2e[MAX_N + 1];
+bool visited[MAX_M];
+int children[MAX_M][2];
+int childcount[MAX_M];
+int nodecounts[MAX_M];
+
+
+int dfs(int node)
+{
+	visited[node] = true;
+	nodecounts[node] = 1;
+
+	int a = edges[node].first, b = edges[node].second;
+	for (int i = 0; i &lt; v2e[a].size(); ++i) {
+		int nei = v2e[a][i];
+		if (nei != node &#38;&#38; !visited[nei]) {
+			children[node][childcount[node]++] = nei;
+			nodecounts[node] += dfs(nei);
+		}
+	}
+	for (int i = 0; i &lt; v2e[b].size(); ++i) {
+		int nei = v2e[b][i];
+		if (nei != node &#38;&#38; !visited[nei]) {
+			children[node][childcount[node]++] = nei;
+			nodecounts[node] += dfs(nei);
+		}
+	}
+	return nodecounts[node];
+}
+
+
+void printpair(int i, int j)
+{
+	if (edges[i].first == edges[j].first) {
+		printf(&#34;%d %d %d\n&#34;, edges[i].second, edges[i].first, edges[j].second);
+	}
+	else if (edges[i].first == edges[j].second) {
+		printf(&#34;%d %d %d\n&#34;, edges[i].second, edges[i].first, edges[j].first);
+	}
+	else if (edges[i].second == edges[j].first) {
+		printf(&#34;%d %d %d\n&#34;, edges[i].first, edges[i].second, edges[j].second);
+	}
+	else if (edges[i].second == edges[j].second) {
+		printf(&#34;%d %d %d\n&#34;, edges[i].first, edges[i].second, edges[j].first);
+	}
+}
+
+
+bool ajacent(int i, int j)
+{
+	return edges[i].first == edges[j].first ||
+		edges[i].first == edges[j].second ||
+		edges[i].second == edges[j].first ||
+		edges[i].second == edges[j].second;
+}
+
+
+void analyze(int node)
+{
+
+	int child = 0;
+	for (int i = 0; i &lt; childcount[node]; ++i) {
+		if (nodecounts[children[node][i]] % 2) {
+			child = children[node][i];
+		}
+		else {
+			analyze(children[node][i]);
+		}
+	}
+
+	bool flag = false;
+	for (int i = 0; i &lt; childcount[child]; ++i) {
+		if (nodecounts[children[child][i]] % 2) {
+			flag = true;
+			break;
+		}
+	}
+
+	if (!flag) {
+		printpair(node, child);
+
+		for (int i = 0; i &lt; childcount[child]; ++i) {
+			analyze(children[child][i]);
+		}
+	}
+	else {
+		int it = 0, k = 0;
+		for (; it &lt; childcount[child]; ++it) {
+			k = children[child][it];
+			if (ajacent(node, k)) {
+				break;
+			}
+		}
+
+		for (int i = it; i &lt; childcount[child] - 1; ++i) {
+			children[child][i] = children[child][i + 1];
+		}
+		childcount[child]--;
+
+		children[node][0] = k;
+		childcount[node] = 1;
+
+		analyze(child);
+		analyze(node);
+	}
+}
+
+
+void calc()
+{
+	dfs(0);
+	analyze(0);
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d&#34;, &#38;n, &#38;m);
+	for (int i = 0; i &lt; m; ++i) {
+		int x, y; scanf_s(&#34;%d %d&#34;, &#38;x, &#38;y);
+		edges[i].first = x;
+		edges[i].second = y;
+		v2e[x].push_back(i);
+		v2e[y].push_back(i);
+	}
+	calc();
+	return 0;
+}</pre>
+</ul>
+</body></html>

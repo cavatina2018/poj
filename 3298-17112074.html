@@ -1,0 +1,258 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3298">3298</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 2644K</td><td width=10px></td><td><b>Time:</b> 657MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#define MAX_N	30000
+
+
+int mapping[MAX_N + 1];
+int results1[MAX_N + 1];
+int results2[MAX_N + 1];
+
+
+struct TreeNode
+{
+	static TreeNode* buffer[32];
+
+	int level;
+	int start;
+	int len;
+	int maxvalue1;
+	int maxvalue2;
+	int maxindex1;
+	int maxindex2;
+	TreeNode* left;
+	TreeNode* right;
+
+	static TreeNode* CreateTreeNode(int level, int s, int l)
+	{
+		TreeNode* node = buffer[level] + (s / l);
+		node-&gt;level = level;
+		node-&gt;start = s;
+		node-&gt;len = l;
+		node-&gt;maxvalue1 = 0;
+		node-&gt;maxvalue2 = 0;
+		node-&gt;maxindex1 = -1;
+		node-&gt;maxindex2 = -1;
+		node-&gt;left = node-&gt;right = NULL;
+		return node;
+	}
+
+	void add(int index, int value1, int value2)
+	{
+		if (value1 &gt;= maxvalue1) {
+			maxvalue1 = value1;
+			maxindex1 = index;
+		}
+		if (value2 &gt;= maxvalue2) {
+			maxvalue2 = value2;
+			maxindex2 = index;
+		}
+
+		if (len &gt; 1)
+		{
+			int len2 = len / 2;
+
+			if (index &lt; start + len2)
+			{
+				if (!left) left = CreateTreeNode(level + 1, start, len2);
+				left-&gt;add(index, value1, value2);
+			}
+			else
+			{
+				if (!right) right = CreateTreeNode(level + 1, start + len2, len2);
+				right-&gt;add(index, value1, value2);
+			}
+		}
+	}
+
+	int getbig(int index, int&#38; value)
+	{
+		if (len == 1) {
+			value = maxvalue2;
+			return maxindex2;
+		}
+
+		int len2 = len / 2;
+		if (index &lt; start + len2) {
+			if (left &#38;&#38; right) {
+				int i, v;
+				i = left-&gt;getbig(index, v);
+				if (i != -1 &#38;&#38; v &gt; right-&gt;maxvalue2) {
+					value = v;
+					return i;
+				}
+				else {
+					value = right-&gt;maxvalue2;
+					return right-&gt;maxindex2;
+				}
+			}
+			else if (left) {
+				return left-&gt;getbig(index, value);
+			}
+			else if (right) {
+				value = right-&gt;maxvalue2;
+				return right-&gt;maxindex2;
+			}
+			else {
+				return -1;
+			}
+		}
+		else {
+			if (right) {
+				return right-&gt;getbig(index, value);
+			}
+			else {
+				return -1;
+			}
+		}
+	}
+
+	int getsmall(int index, int&#38; value)
+	{
+		if (len == 1) {
+			value = maxvalue1;
+			return maxindex1;
+		}
+
+		int len2 = len / 2;
+		if (index &gt;= start + len2) {
+			if (left &#38;&#38; right) {
+				int i, v;
+				i = right-&gt;getsmall(index, v);
+				if (i != -1 &#38;&#38; v &gt; left-&gt;maxvalue1) {
+					value = v;
+					return i;
+				}
+				else {
+					value = left-&gt;maxvalue1;
+					return left-&gt;maxindex1;
+				}
+			}
+			else if (right) {
+				return right-&gt;getsmall(index, value);
+			}
+			else if (left) {
+				value = left-&gt;maxvalue1;
+				return left-&gt;maxindex1;
+			}
+			else {
+				return -1;
+			}
+		}
+		else {
+			if (left) {
+				return left-&gt;getsmall(index, value);
+			}
+			else {
+				return -1;
+			}
+		}
+	}
+};
+
+
+TreeNode buf0[1 &lt;&lt; 0];
+TreeNode buf1[1 &lt;&lt; 1];
+TreeNode buf2[1 &lt;&lt; 2];
+TreeNode buf3[1 &lt;&lt; 3];
+TreeNode buf4[1 &lt;&lt; 4];
+TreeNode buf5[1 &lt;&lt; 5];
+TreeNode buf6[1 &lt;&lt; 6];
+TreeNode buf7[1 &lt;&lt; 7];
+TreeNode buf8[1 &lt;&lt; 8];
+TreeNode buf9[1 &lt;&lt; 9];
+TreeNode buf10[1 &lt;&lt; 10];
+TreeNode buf11[1 &lt;&lt; 11];
+TreeNode buf12[1 &lt;&lt; 12];
+TreeNode buf13[1 &lt;&lt; 13];
+TreeNode buf14[1 &lt;&lt; 14];
+TreeNode buf15[1 &lt;&lt; 15];
+TreeNode buf16[1 &lt;&lt; 16];
+
+
+TreeNode* TreeNode::buffer[32] = {
+	buf0,
+	buf1,
+	buf2,
+	buf3,
+	buf4,
+	buf5,
+	buf6,
+	buf7,
+	buf8,
+	buf9,
+	buf10,
+	buf11,
+	buf12,
+	buf13,
+	buf14,
+	buf15,
+	buf16
+};
+
+
+TreeNode* root;
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		int n; scanf_s(&#34;%d&#34;, &#38;n);
+		if (!n) {
+			printf(&#34;0\n&#34;);
+			continue;
+		}
+
+		root = TreeNode::CreateTreeNode(0, 0, 1 &lt;&lt; 16);
+
+		int num; scanf_s(&#34;%d&#34;, &#38;num);
+		mapping[num] = 1;
+		results1[1] = 0;
+		results2[1] = 1;
+		root-&gt;add(num, results1[1], results2[1]);
+
+		int res = 1;
+		for (int j = 2; j &lt;= n; ++j) {
+			scanf_s(&#34;%d&#34;, &#38;num);
+			mapping[num] = j;
+			{
+				int value = 0, index = root-&gt;getbig(num, value);
+				if (index == -1) {
+					results1[j] = 0;
+				}
+				else {
+					results1[j] = results2[mapping[index]] + 1;
+					if (results1[j] &gt; res) res = results1[j];
+				}
+			}
+			{
+				int value = 0, index = root-&gt;getsmall(num, value);
+				if (index == -1) {
+					results2[j] = 1;
+				}
+				else {
+					results2[j] = results1[mapping[index]] + 1;
+					if (results2[j] &gt; res) res = results2[j];
+				}
+			}
+			root-&gt;add(num, results1[j], results2[j]);
+		}
+		printf(&#34;%d\n&#34;, res);
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

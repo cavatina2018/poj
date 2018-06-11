@@ -1,0 +1,140 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2817">2817</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 256K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	10
+#define MAX_L	11
+
+
+int n;
+char dna[MAX_N][MAX_L];
+int lens[MAX_N];
+int common[MAX_N][MAX_N];
+
+bool states[MAX_N][1 &lt;&lt; MAX_N];
+int results[MAX_N][1 &lt;&lt; MAX_N];
+
+
+void comp(int i, int j)
+{
+	int len1 = lens[i], len2 = lens[j];
+	common[i][j] = 0;
+
+	for (int k = 0; k &lt; len1; ++k) {
+		int c = 0;
+		for (int l = 0; l &lt; len2 &#38;&#38; l + k &lt; len1; ++l) {
+			if (dna[i][k + l] == dna[j][l]) {
+				++c;
+				if (c &gt; common[i][j]) {
+					common[i][j] = c;
+				}
+			}
+		}
+	}
+
+	for (int k = 0; k &lt; len2; ++k) {
+		int c = 0;
+		for (int l = 0; l &lt; len1 &#38;&#38; l + k &lt; len2; ++l) {
+			if (dna[j][k + l] == dna[i][l]) {
+				++c;
+				if (c &gt; common[i][j]) {
+					common[i][j] = c;
+				}
+			}
+		}
+	}
+
+	common[j][i] = common[i][j];
+}
+
+
+int calc(int idx, int s)
+{
+	if (states[idx][s]) {
+		return results[idx][s];
+	}
+
+	int res = 0;
+	int s2 = s &#38; ~(1 &lt;&lt; idx);
+
+	if (s2 == 0) {
+		res = 0;
+	}
+	else {
+		for (int i = 0; i &lt; n; ++i) {
+			if (i == idx) continue;
+			if ((s2 &#38; (1 &lt;&lt; i)) == 0) continue;
+			int ret = common[idx][i] + calc(i, s2);
+			if (ret &gt; res) {
+				res = ret;
+			}
+		}
+	}
+
+	results[idx][s] = res;
+	states[idx][s] = true;
+	return res;
+}
+
+
+
+void init()
+{
+	for (int i = 0; i &lt; n; ++i) {
+		for (int j = 0; j &lt; i; ++j) {
+			comp(i, j);
+		}
+	}
+}
+
+
+int calc()
+{
+	init();
+
+	memset(states, 0, sizeof(states));
+
+	int res = 0;
+	for (int i = 0; i &lt; n; ++i) {
+		int ret = calc(i, (1 &lt;&lt; n) - 1);
+		if (ret &gt; res) {
+			res = ret;
+		}
+	}
+
+	return res;
+}
+
+
+int main()
+{
+	while(true) {
+		scanf_s(&#34;%d&#34;, &#38;n);
+		if (!n) break;
+
+		for (int j = 0; j &lt; n; ++j) {
+			scanf_s(&#34;%s&#34;, dna[j], MAX_L);
+			lens[j] = strlen(dna[j]);
+		}
+
+		printf(&#34;%d\n&#34;, calc());
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

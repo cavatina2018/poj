@@ -1,0 +1,114 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3310">3310</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 244K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	100
+
+
+int n, e;
+int edgecounts[MAX_N + 1];
+int edges[MAX_N + 1][MAX_N + 1];
+bool states[MAX_N + 1];
+
+
+bool dfs1(int node, int parent)
+{
+	if (states[node]) {
+		return false;
+	}
+
+	states[node] = true;
+
+	for (int i = 0; i &lt; edgecounts[node]; ++i) {
+		int v = edges[node][i];
+		if (v == parent) continue;
+		if (!dfs1(v, node)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+bool dfs2(int node, int parent, int m, bool&#38; on)
+{
+	on = edgecounts[node] &gt; 1;
+
+	if (parent == -1 &#38;&#38; !on) {
+		bool on2 = false;
+		return dfs2(edges[node][0], node, 2, on2);
+	}
+
+	int scount = 0;
+	for (int i = 0; i &lt; edgecounts[node]; ++i) {
+		int v = edges[node][i];
+		if (v == parent) continue;
+
+		bool on2 = false;
+		if (!dfs2(v, node, 1, on2)) {
+			return false;
+		}
+
+		if (on2) {
+			if (++scount &gt; m) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+
+bool calc()
+{
+	memset(states, 0, sizeof(states));
+	if (!dfs1(1, -1)) return false;
+
+	for (int i = 1; i &lt;= n; ++i) {
+		if (!states[i]) return false;
+	}
+
+	bool on = false;
+	return dfs2(1, -1, 2, on);
+}
+
+
+int main()
+{
+	for (int t = 1; ; ++t) {
+		scanf_s(&#34;%d %d&#34;, &#38;n, &#38;e);
+		if (!n) break;
+
+		memset(edgecounts, 0, sizeof(edgecounts));
+		
+		for (int i = 0; i &lt; e; ++i) {
+			int x, y; scanf_s(&#34;%d %d&#34;, &#38;x, &#38;y);
+			edges[x][edgecounts[x]++] = y;
+			edges[y][edgecounts[y]++] = x;
+		}
+
+		if (calc()) {
+			printf(&#34;Graph %d is a caterpillar.\n&#34;, t);
+		}
+		else {
+			printf(&#34;Graph %d is not a caterpillar.\n&#34;, t);
+		}
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

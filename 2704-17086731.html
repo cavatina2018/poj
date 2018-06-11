@@ -1,0 +1,69 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2704">2704</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 232K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+#define MAX_N	34
+
+int n;
+int matrix[MAX_N][MAX_N];
+bool states[MAX_N][MAX_N];
+long long paths[MAX_N][MAX_N];
+
+
+long long calc(int i, int j)
+{
+	if (states[i][j]) return paths[i][j];
+
+	long long res = 0;
+	if (i == n - 1 &#38;&#38; j == n - 1) {
+		res = 1;
+	}
+	else {
+		int step = matrix[i][j];
+		if (step &#38;&#38; i + step &lt; n) {
+			res += calc(i + step, j);
+		}
+		if (step &#38;&#38; j + step &lt; n) {
+			res += calc(i, j + step);
+		}
+	}
+
+	paths[i][j] = res;
+	states[i][j] = true;
+	return res;
+}
+
+
+int main()
+{
+	while (true) {
+		cin &gt;&gt; n;
+		if (n &lt;= 0) break;
+
+		for (int i = 0; i &lt; n; ++i) {
+			string s; cin &gt;&gt; s;
+			for (int j = 0; j &lt; n; ++j) {
+				matrix[i][j] = s[j] - &#39;0&#39;;
+			}
+		}
+
+		memset(states, 0, sizeof(states));
+		cout &lt;&lt; calc(0, 0) &lt;&lt; endl;
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

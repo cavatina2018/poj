@@ -1,0 +1,63 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2748">2748</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 1340K</td><td width=10px></td><td><b>Time:</b> 1297MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+using namespace std;
+#define MAX_N	200000
+#define M		100000
+
+
+int n;
+int A[MAX_N];
+int B[MAX_N];
+
+
+void init()
+{
+	int a = 1, b = 1;
+	for (n = 0; ; ++n) {
+		A[n] = a, B[n] = b;
+		int c = (a + b) % M;
+		a = b, b = c;
+
+		if (a == 1 &#38;&#38; b == 1) {
+			++n;
+			break;
+		}
+	}
+}
+
+
+int calc(int x)
+{
+	if (x == 1) return 1;
+
+	long long idx = (long long)2 * (x - 2) % n;
+	return (A[idx] + B[idx]) % M;
+}
+
+
+int main()
+{
+	init();
+	
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		int x; scanf_s(&#34;%d&#34;, &#38;x);
+		printf(&#34;%d\n&#34;, calc(x));
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

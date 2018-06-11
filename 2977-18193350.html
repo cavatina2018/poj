@@ -1,0 +1,76 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2977">2977</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 132K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+
+int a, b, c;
+int x, y, z;
+
+
+int calc()
+{
+	if (x == 0) {
+		return y * y + z * z;
+	}
+	if (y == 0) {
+		return x * x + z * z;
+	}
+	if (z == 0) {
+		return x * x + y * y;
+	}
+	if (x == a) {
+		int ret1 = y * y + (a + z) * (a + z);
+		int ret2 = (b + z) * (b + z) + (a + b - y) * (a + b - y);
+		int ret3 = z * z + (a + y) * (a + y);
+		int ret4 = (c + y) * (c + y) + (a + c - z) * (a + c - z);
+		return min(min(ret1, ret2), min(ret3, ret4));
+	}
+	if (y == b) {
+		int ret1 = x * x + (b + z) * (b + z);
+		int ret2 = (a + z) * (a + z) + (b + a - x) * (b + a - x);
+		int ret3 = z * z + (b + x) * (b + x);
+		int ret4 = (c + x) * (c + x) + (b + c - z) * (b + c - z);
+		return min(min(ret1, ret2), min(ret3, ret4));
+	}
+	if (z == c) {
+		int ret1 = x * x + (c + y) * (c + y);
+		int ret2 = (a + y) * (a + y) + (c + a - x) * (c + a - x);
+		int ret3 = y * y + (c + x) * (c + x);
+		int ret4 = (b + x) * (b + x) + (c + b - y) * (c + b - y);
+		return min(min(ret1, ret2), min(ret3, ret4));
+	}
+
+	while (true) printf(&#34;...&#34;);
+	return 0;
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d %d %d %d %d %d&#34;, &#38;a, &#38;b, &#38;c, &#38;x, &#38;y, &#38;z);
+		if (a == 0 &#38;&#38; b == 0 &#38;&#38; c == 0 &#38;&#38; x == 0 &#38;&#38; y == 0 &#38;&#38; z == 0) {
+			break;
+		}
+		while (a &lt;= 0 || b &lt;= 0 || c &lt;= 0) printf(&#34;...&#34;);
+
+		printf(&#34;%d\n&#34;, calc());
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

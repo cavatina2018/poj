@@ -1,0 +1,76 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2978">2978</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 228K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	100
+
+
+int n, k;
+int stones[MAX_N];
+bool states[MAX_N][32][6];
+int results[MAX_N][32][6];
+
+
+int calc(int index, int mask, int start)
+{
+	if (index &gt;= n) return 0;
+	if (states[index][mask][start]) {
+		return results[index][mask][start];
+	}
+
+	int res = INT_MAX;
+
+	int ret = 1 + calc(index + 1, mask, start);
+	if (ret &lt; res) res = ret;
+
+	int color = stones[index], bit = 1;
+	for (int i = 0; i &lt; color - 1; ++i) {
+		bit &lt;&lt;= 1;
+	}
+
+	if (!(mask &#38; bit)) {
+		if (start == 0 || start == color) {
+			ret = calc(index + 1, mask, color);
+			if (ret &lt; res) res = ret;
+
+			ret = calc(index + 1, mask | bit, 0);
+			if (ret &lt; res) res = ret;
+		}
+	}	
+
+	results[index][mask][start] = res;
+	states[index][mask][start] = true;
+	return res;
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d %d&#34;, &#38;n, &#38;k);
+		if (!n &#38;&#38; !k) break;
+
+		for (int i = 0; i &lt; n; ++i) {
+			scanf_s(&#34;%d&#34;, &#38;stones[i]);
+			stones[i];
+		}
+
+		memset(states, 0, sizeof(states));
+		printf(&#34;%d\n&#34;, calc(0, 0, 0));
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

@@ -1,0 +1,53 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_java.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3331">3331</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 5292K</td><td width=10px></td><td><b>Time:</b> 829MS</td></tr>
+<tr><td><b>Language:</b> Java</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_java" style="font-family:Courier New,Courier,monospace">import java.math.*;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+
+public class Main {
+	static BigInteger[] fact = new BigInteger[367];
+	static int[][] counts = new int[367][10];
+		
+	static void init()
+	{
+		fact[1] = BigInteger.ONE;
+		counts[1][1] = 1;
+		
+		for(int i = 2; i &lt;= 366; ++i) {
+			fact[i] = fact[i - 1].multiply(BigInteger.valueOf(i));
+			
+			BigInteger t = fact[i];
+			while(t.compareTo(BigInteger.ZERO) &gt; 0) {
+				int digit = t.mod(BigInteger.valueOf(10)).intValue();
+				counts[i][digit]++;
+				t = t.divide(BigInteger.valueOf(10));
+			}
+		}
+	}
+	
+    public static void main(String[] args) {
+		init();
+        Scanner in = new Scanner(System.in);
+		int t = in.nextInt();
+		for(int i = 0; i &lt; t; ++i) {
+			int y = in.nextInt();
+			int d = in.nextInt();
+			System.out.println(counts[y][d]);
+		}
+	}
+};</pre>
+</ul>
+</body></html>

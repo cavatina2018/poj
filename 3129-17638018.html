@@ -1,0 +1,76 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3129">3129</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 252K</td><td width=10px></td><td><b>Time:</b> 63MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	500
+#define MAX_M	50
+
+
+int n, m;
+double xstar[MAX_N], ystar[MAX_N], zstar[MAX_N];
+double xtele[MAX_M], ytele[MAX_M], ztele[MAX_M], wtele[MAX_M];
+bool states[MAX_N];
+
+
+bool test(int i, int j)
+{
+	double product = xtele[i] * xstar[j] + ytele[i] * ystar[j] + ztele[i] * zstar[j];
+	double s1 = sqrt(xtele[i] * xtele[i] + ytele[i] * ytele[i] + ztele[i] * ztele[i]);
+	double s2 = sqrt(xstar[j] * xstar[j] + ystar[j] * ystar[j] + zstar[j] * zstar[j]);
+	double angle = acos(product / s1 / s2);
+	return angle &lt; wtele[i];
+}
+
+
+int calc()
+{
+	memset(states, 0, sizeof(states));
+	int count = 0;
+
+	for (int i = 0; i &lt; m; ++i) {
+		for (int j = 0; j &lt; n; ++j) {
+			if (test(i, j) &#38;&#38; !states[j]) {
+				states[j] = true;
+				count++;
+			}
+		}
+	}
+
+	return count;
+}
+
+
+int main()
+{
+	while (true) {
+		scanf_s(&#34;%d&#34;, &#38;n);
+		if (!n) break;
+
+		for (int i = 0; i &lt; n; ++i) {
+			scanf_s(&#34;%lf %lf %lf&#34;, &#38;xstar[i], &#38;ystar[i], &#38;zstar[i]);
+		}
+
+		scanf_s(&#34;%d&#34;, &#38;m);
+
+		for (int i = 0; i &lt; m; ++i) {
+			scanf_s(&#34;%lf %lf %lf %lf&#34;, &#38;xtele[i], &#38;ytele[i], &#38;ztele[i], &#38;wtele[i]);
+		}
+
+		printf(&#34;%d\n&#34;, calc());
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

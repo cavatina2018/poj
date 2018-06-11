@@ -1,0 +1,184 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3098">3098</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 248K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	100
+
+
+vector&lt;string&gt; words;
+bool contains[MAX_N][26];
+
+
+struct Term
+{
+	int nflags1;
+	int nflags2;
+	int nflags3;
+	char flags1[26];
+	char flags2[26];
+	char flags3[26];
+
+	void init(char* query, int start, int end)
+	{
+		nflags1 = nflags2 = nflags3 = 0;
+
+		for (int i = start; i &lt; end; ++i) {
+			if (query[i] &gt;= &#39;a&#39; &#38;&#38; query[i] &lt;= &#39;z&#39;) {
+				flags1[nflags1++] = query[i];
+			}
+			else if (query[i] == &#39;+&#39;) {
+				flags2[nflags2++] = query[++i];
+			}
+			else {
+				flags3[nflags3++] = query[++i];
+			}
+		}
+	}
+};
+
+
+struct Query
+{
+	Term terms[80];
+	int nterms;
+
+	void init(char* query)
+	{
+		nterms = 0;
+
+		int i = 0, start = 0;
+		for (; query[i]; ++i) {
+			if (query[i] == &#39;|&#39;) {
+				terms[nterms++].init(query, start, i);
+				start = i + 1;
+			}
+		}
+		terms[nterms++].init(query, start, i);
+	}
+};
+
+
+Query q;
+
+
+void init()
+{
+	sort(words.begin(), words.end());
+	memset(contains, 0, sizeof(contains));
+
+	for (int i = 0; i &lt; words.size(); ++i) {
+		for (int j = 0; j &lt; words[i].length(); ++j) {
+			contains[i][words[i][j] - &#39;a&#39;] = true;
+		}
+	}
+}
+
+
+bool match(int idx, Term&#38; term)
+{
+	bool flag = false;
+	for (int i = 0; i &lt; term.nflags1; ++i) {
+		if (contains[idx][term.flags1[i] - &#39;a&#39;]) {
+			flag = true;
+			break;
+		}
+	}
+
+	if (!flag) return false;
+
+	flag = false;
+	for (int i = 0; i &lt; term.nflags2; ++i) {
+		if (!contains[idx][term.flags2[i] - &#39;a&#39;]) {
+			flag = true;
+			break;
+		}
+	}
+
+	if (flag) return false;
+
+	flag = false;
+	for (int i = 0; i &lt; term.nflags3; ++i) {
+		if (contains[idx][term.flags3[i] - &#39;a&#39;]) {
+			flag = true;
+			break;
+		}
+	}
+
+	if (flag) return false;
+
+	return true;
+}
+
+
+bool match(int idx)
+{
+	for (int i = 0; i &lt; q.nterms; ++i) {
+		if (match(idx, q.terms[i])) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
+void search()
+{
+	for (int i = 0; i &lt; words.size(); ++i) {
+		if (match(i)) {
+			printf(&#34;%s\n&#34;, words[i].c_str());
+			return;
+		}
+	}
+	printf(&#34;NONE\n&#34;);
+}
+
+
+int main()
+{
+	char buffer[1024];
+
+	while (true) {
+		words.clear();
+
+		while (true) {
+			scanf_s(&#34;%s&#34;, buffer, 1024);
+			if (buffer[0] == &#39;#&#39;) {
+				return 0;
+			}
+			if (buffer[0] == &#39;*&#39;) {
+				break;
+			}
+			words.push_back(buffer);
+		}
+
+		init();
+
+		while (true) {
+			scanf_s(&#34;%s&#34;, buffer, 1024);
+			if (buffer[0] == &#39;*&#39;) {
+				break;
+			}
+			q.init(buffer);
+			search();
+		}
+
+		printf(&#34;$\n&#34;);
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

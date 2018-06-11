@@ -1,0 +1,133 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3231">3231</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 232K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;float.h&gt;
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	100
+
+
+int n, finishcount, maxreachcount;
+double maxband;
+double filesize[MAX_N];
+double speed[MAX_N];
+double maxspeed[MAX_N];
+double finishtime[MAX_N];
+bool finished[MAX_N];
+bool maxreached[MAX_N];
+int leftspeed[MAX_N];
+
+
+bool Less(int a, int b)
+{
+	return maxspeed[a] - speed[a] &lt; maxspeed[b] - speed[b];
+}
+
+
+void calc()
+{
+	for (int i = 0; i &lt; n; ++i) {
+		leftspeed[i] = i;
+	}
+	sort(leftspeed, leftspeed + n, Less);
+
+	double currtime = 0.0;
+
+	while (finishcount &lt; n) {
+		double t = DBL_MAX;
+		int index = 0;
+		for (int i = 0; i &lt; n; ++i) {
+			if (finished[i]) continue;
+			double t2 = filesize[i] / speed[i];
+			if (t2 &lt; t) {
+				t = t2;
+				index = i;
+			}
+		}
+
+		currtime += t;
+		finished[index] = true;
+		finishtime[index] = currtime;
+		finishcount++;
+		if (!maxreached[index]) {
+			maxreachcount++;
+		}
+
+		if (finishcount &lt; n) {
+			for (int i = 0; i &lt; n; ++i) {
+				if (finished[i]) continue;
+				filesize[i] -= t * speed[i];
+			}
+
+			if (n - maxreachcount &gt; 0) {
+				double released = speed[index];
+				double addspeed = 0.0;
+				bool flag = false;
+				for (int i = 0; i &lt; n; ++i) {
+					int k = leftspeed[i];
+					if (finished[k] || maxreached[k]) continue;
+
+					speed[k] += addspeed;
+					if(!flag) {
+						double a = released / (n - maxreachcount);
+						if (a &lt;= maxspeed[k] - speed[k]) {
+							flag = true;
+							addspeed += a;
+							speed[k] += a;
+						}
+						else {
+							a = maxspeed[k] - speed[k];
+							addspeed += a;
+							speed[k] = maxspeed[k];
+							released -= a * (n - maxreachcount);
+							maxreached[k] = true;
+							maxreachcount++;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i &lt; n; ++i) {
+		printf(&#34;NO%d:%.3fs\n&#34;, i + 1, finishtime[i]);
+	}
+}
+
+
+int main()
+{
+	for (int t = 1; ; ++t) {
+		cin &gt;&gt; n;
+		if (!n) break;
+		cin &gt;&gt; maxband;
+
+		for (int i = 0; i &lt; n; ++i) {
+			cin &gt;&gt; filesize[i] &gt;&gt; speed[i] &gt;&gt; maxspeed[i];
+		}
+
+		finishcount = 0;
+		maxreachcount = 0;
+		memset(finished, 0, sizeof(finished));
+		memset(maxreached, 0, sizeof(maxreached));
+
+		cout &lt;&lt; &#34;Case &#34; &lt;&lt; t &lt;&lt; &#34;:&#34; &lt;&lt; endl;
+		calc();
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

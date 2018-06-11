@@ -1,0 +1,169 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2576">2576</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 6192K</td><td width=10px></td><td><b>Time:</b> 79MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;time.h&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+
+#define MAX_N	100
+#define MAX_W	450
+
+int N;
+int weights[MAX_N];
+bool states[MAX_N][MAX_N * MAX_W + 1];
+vector&lt;int&gt; vstates[MAX_N];
+
+
+int calc(int max_num, int max_weight)
+{
+	memset(states, 0, sizeof(states));
+	for (int i = 0; i &lt; MAX_N; ++i)
+	{
+		vstates[i].clear();
+	}
+
+	int res = 0;
+
+	for (int i = 0; i &lt; N; ++i)
+	{
+		for (int j = max_num - 1; j &gt;= 1; --j)
+		{
+			for (int k = 0; k &lt; vstates[j].size(); ++k)
+			{
+				int w = vstates[j][k] + weights[i];
+				if (w &gt; max_weight)
+				{
+					continue;
+				}
+
+				if (!states[j + 1][w])
+				{
+					states[j + 1][w] = true;
+					vstates[j + 1].push_back(w);
+
+					if (j + 1 == max_num &#38;&#38; w &gt; res)
+					{
+						res = w;
+					}
+				}
+			}
+		}
+
+		int w = weights[i];
+		if (w &lt; max_weight &#38;&#38; !states[1][w])
+		{
+			states[1][w] = true;
+			vstates[1].push_back(w);
+
+			if (1 == max_num &#38;&#38; w &gt; res)
+			{
+				res = w;
+			}
+		}
+	}
+
+	return res;
+}
+
+
+void test()
+{
+	N = 99;
+
+	for (int i = 0; i &lt; N; ++i)
+	{
+		weights[i] = 450;//rand() % 450 + 1;
+	}
+
+	int sum = 0;
+	for (int i = 0; i &lt; N; ++i)
+	{
+		weights[i] *= 2;
+		sum += weights[i];
+	}
+
+	if (N % 2 == 0)
+	{
+		int ret = calc(N / 2, sum / 2);
+		cout &lt;&lt; ret &lt;&lt; endl;
+	}
+	else
+	{
+		int ret1 = calc(N / 2, sum / 2);
+		int ret2 = calc(N / 2 + 1, sum / 2);
+		int ret = ret1 &gt; ret2 ? ret1 : ret2;
+		cout &lt;&lt; ret &lt;&lt; endl;
+	}
+}
+
+
+void work()
+{
+	cin &gt;&gt; N;
+
+	for (int i = 0; i &lt; N; ++i)
+	{
+		cin &gt;&gt; weights[i];
+	}
+
+	int sum = 0;
+	for (int i = 0; i &lt; N; ++i)
+	{
+		weights[i] *= 2;
+		sum += weights[i];
+	}
+
+	int A, B, C;
+
+	if (N % 2 == 0)
+	{
+		C = calc(N / 2, sum / 2);
+	}
+	else
+	{
+		int ret1 = calc(N / 2, sum / 2);
+		int ret2 = calc(N / 2 + 1, sum / 2);
+		C = ret1 &gt; ret2 ? ret1 : ret2;
+	}
+
+	A = C / 2, B = (sum - C) / 2;
+	if (A &lt;= B)
+	{
+		cout &lt;&lt; A &lt;&lt; &#34; &#34; &lt;&lt; B &lt;&lt; endl;
+	}
+	else
+	{
+		cout &lt;&lt; B &lt;&lt; &#34; &#34; &lt;&lt; A &lt;&lt; endl;
+	}
+}
+
+
+int main()
+{
+#if 0
+	time_t begin = time(NULL);
+	for (int i = 0; i &lt; 100; ++i)
+	{
+		test();
+	}
+	cout &lt;&lt; (time(NULL) - begin) &lt;&lt; endl;
+	getchar();
+#else
+	work();
+#endif
+    return 0;
+}</pre>
+</ul>
+</body></html>

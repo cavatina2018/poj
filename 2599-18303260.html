@@ -1,0 +1,85 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2599">2599</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 372K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	1000
+#define MAX_M	20
+
+
+int n, k;
+int edgecounts[MAX_N + 1];
+int edges[MAX_N + 1][MAX_M];
+bool visited[MAX_N + 1];
+int childcounts[MAX_N + 1];
+int children[MAX_N + 1][MAX_M];
+
+
+void buildtree(int node)
+{
+	visited[node] = true;
+
+	for (int i = 0; i &lt; edgecounts[node]; ++i) {
+		int next = edges[node][i];
+		if (visited[next]) continue;
+		children[node][childcounts[node]++] = next;
+		buildtree(next);
+	}
+}
+
+
+int calc(int node, int player)
+{
+	int res = 0, opponent = player ? 0 : 1;
+
+	for (int i = 0; i &lt; childcounts[node]; ++i) {
+		int child = children[node][i];
+		int ret = calc(child, opponent);
+		if (!ret) {
+			if (res == 0) {
+				res = child;
+			}
+			else if (child &lt; res) {
+				res = child;
+			}
+		}
+	}
+	return res;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d&#34;, &#38;n, &#38;k);
+	while (n &gt; MAX_N) printf(&#34;...&#34;);
+
+	for (int i = 0; i &lt; n - 1; ++i) {
+		int a, b; scanf_s(&#34;%d %d&#34;, &#38;a, &#38;b);
+		while (edgecounts[a] &gt;= MAX_M || edgecounts[b] &gt;= MAX_M) printf(&#34;...&#34;);
+		edges[a][edgecounts[a]++] = b;
+		edges[b][edgecounts[b]++] = a;
+	}
+
+	buildtree(k);
+
+	int ret = calc(k, 0);
+	if (!ret) {
+		printf(&#34;First player loses\n&#34;);
+	}
+	else {
+		printf(&#34;First player wins flying to airport %d\n&#34;, ret);
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

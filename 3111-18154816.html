@@ -1,0 +1,111 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3111">3111</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 1712K</td><td width=10px></td><td><b>Time:</b> 5907MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;float.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	100000
+
+
+int n, k;
+int A[MAX_N];
+int B[MAX_N];
+double x;
+int ranks[MAX_N];
+double limit;
+int results[MAX_N];
+
+
+bool Less(int a, int b)
+{
+	return A[a] - x * B[a] &gt; A[b] - x * B[b];
+}
+
+
+bool test()
+{
+	sort(ranks, ranks + n, Less);
+
+	double sum = 0.0;
+	for (int i = 0; i &lt; k; ++i) {
+		int idx = ranks[i];
+		sum += A[idx] - x * B[idx];
+	}
+
+	return sum &gt;= 0.0;
+}
+
+
+void calc()
+{
+	for (int i = 0; i &lt; n; ++i) {
+		ranks[i] = i;
+	}
+
+	double a = 0.0, b = limit + 1.0, res = a;
+	while (true) {
+		if (b - a &lt; 0.0000001) {
+			break;
+		}
+		x = (a + b) / 2.0;
+		if (test()) {
+			if (x &gt; res) res = x;
+			a = x;
+		}
+		else {
+			b = x;
+		}
+	}
+
+	x = res;
+}
+
+
+void printres()
+{
+	sort(ranks, ranks + n, Less);
+
+	for (int i = 0; i &lt; k; ++i) {
+		results[i] = ranks[i] + 1;
+	}
+
+	sort(results, results + k);
+
+	for (int i = 0; i &lt; k; ++i) {
+		printf(&#34;%d &#34;, results[i]);
+	}
+	printf(&#34;\n&#34;);
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d&#34;, &#38;n, &#38;k);
+	while (n &lt; k || n &lt; 1 || n &gt; MAX_N || k &lt; 1) printf(&#34;...&#34;);
+	
+	int maxvalue = INT_MIN;
+	int minweight = INT_MAX;
+	for (int i = 0; i &lt; n; ++i) {
+		scanf_s(&#34;%d %d&#34;, &#38;A[i], &#38;B[i]);
+		if (A[i] &gt; maxvalue) maxvalue = A[i];
+		if (B[i] &lt; minweight) minweight = B[i];
+	}
+	limit = (double)maxvalue / minweight;
+
+	calc();
+	printres();
+	return 0;
+}</pre>
+</ul>
+</body></html>

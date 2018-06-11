@@ -1,0 +1,222 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2985">2985</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 1876K</td><td width=10px></td><td><b>Time:</b> 813MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	200001
+
+
+int n, m;
+int clustersize[MAX_N];
+int prev[MAX_N];
+
+
+struct TreeNode
+{
+	static TreeNode* buffer[32];
+
+	int level;
+	int count;
+	int start;
+	int len;
+	TreeNode* left;
+	TreeNode* right;
+
+	static TreeNode* CreateTreeNode(int level, int s, int l)
+	{
+		TreeNode* node = buffer[level] + (s / l);
+		node-&gt;level = level;
+		node-&gt;count = 0;
+		node-&gt;start = s;
+		node-&gt;len = l;
+		node-&gt;left = node-&gt;right = NULL;
+		return node;
+	}
+
+	void add(int value)
+	{
+		++count;
+
+		if (len &gt; 1)
+		{
+			int len2 = len / 2;
+
+			if (value &lt; start + len2)
+			{
+				if (!left) left = CreateTreeNode(level + 1, start, len2);
+				left-&gt;add(value);
+			}
+			else
+			{
+				if (!right) right = CreateTreeNode(level + 1, start + len2, len2);
+				right-&gt;add(value);
+			}
+		}
+	}
+
+
+	void del(int value)
+	{
+		--count;
+
+		if (len &gt; 1)
+		{
+			int len2 = len / 2;
+
+			if (value &lt; start + len2)
+			{
+				left-&gt;del(value);
+			}
+			else
+			{
+				right-&gt;del(value);
+			}
+		}
+	}
+
+
+	int get(int idx)
+	{
+		if (len == 1) return start;
+
+		int len2 = len / 2;
+		if (right) {
+			if (idx &lt;= right-&gt;count) {
+				return right-&gt;get(idx);
+			}
+			idx -= right-&gt;count;
+		}
+
+		return left-&gt;get(idx);
+	}
+};
+
+
+TreeNode buf0[1 &lt;&lt; 0];
+TreeNode buf1[1 &lt;&lt; 1];
+TreeNode buf2[1 &lt;&lt; 2];
+TreeNode buf3[1 &lt;&lt; 3];
+TreeNode buf4[1 &lt;&lt; 4];
+TreeNode buf5[1 &lt;&lt; 5];
+TreeNode buf6[1 &lt;&lt; 6];
+TreeNode buf7[1 &lt;&lt; 7];
+TreeNode buf8[1 &lt;&lt; 8];
+TreeNode buf9[1 &lt;&lt; 9];
+TreeNode buf10[1 &lt;&lt; 10];
+TreeNode buf11[1 &lt;&lt; 11];
+TreeNode buf12[1 &lt;&lt; 12];
+TreeNode buf13[1 &lt;&lt; 13];
+TreeNode buf14[1 &lt;&lt; 14];
+TreeNode buf15[1 &lt;&lt; 15];
+TreeNode buf16[1 &lt;&lt; 16];
+TreeNode buf17[1 &lt;&lt; 17];
+TreeNode buf18[1 &lt;&lt; 18];
+
+
+TreeNode* TreeNode::buffer[32] = {
+	buf0,
+	buf1,
+	buf2,
+	buf3,
+	buf4,
+	buf5,
+	buf6,
+	buf7,
+	buf8,
+	buf9,
+	buf10,
+	buf11,
+	buf12,
+	buf13,
+	buf14,
+	buf15,
+	buf16,
+	buf17,
+	buf18
+};
+
+
+TreeNode* cache;
+
+
+void init()
+{
+	int l = 1;
+	while (l &lt; n) l *= 2;
+
+	cache = TreeNode::CreateTreeNode(0, 0, l);
+
+	for (int i = 1; i &lt;= n; ++i) {
+		clustersize[i] = 1;
+		prev[i] = i;
+		cache-&gt;add(1);
+	}
+}
+
+
+int update(int a)
+{
+	if (prev[a] == a) return a;
+	prev[a] = update(prev[a]);
+	return prev[a];
+}
+
+
+void combine(int a, int b)
+{
+	if (a == b) return;
+
+	update(a);
+	update(b);
+	if (prev[a] == prev[b]) {
+		return;
+	}
+
+	int c1 = clustersize[prev[a]];
+	int c2 = clustersize[prev[b]];
+
+	clustersize[prev[a]] += clustersize[prev[b]];
+	prev[prev[b]] = prev[a];
+
+	cache-&gt;del(c1);
+	cache-&gt;del(c2);
+	cache-&gt;add(c1 + c2);
+}
+
+
+int query(int k)
+{
+	return cache-&gt;get(k);
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d&#34;, &#38;n, &#38;m);
+	init();
+
+	for (int i = 0; i &lt; m; ++i) {
+		int op; scanf_s(&#34;%d&#34;, &#38;op);
+		if (op == 0) {
+			int a, b; scanf_s(&#34;%d %d&#34;, &#38;a, &#38;b);
+			combine(a, b);
+		}
+		else {
+			int k; scanf_s(&#34;%d&#34;, &#38;k);
+			printf(&#34;%d\n&#34;, query(k));
+		}
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

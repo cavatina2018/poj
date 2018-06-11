@@ -1,0 +1,133 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2844">2844</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 4088K</td><td width=10px></td><td><b>Time:</b> 2422MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#define MAX_N	1000000
+
+
+int n, s, p;
+int nums[MAX_N];
+
+
+int calc(int num, int sum, int prod)
+{
+	if (num == 0) {
+		if (sum == 0 &#38;&#38; prod == 1) {
+			return 0;
+		}
+		return -1;
+	}
+
+	if (sum &gt; num || sum &lt; -num) {
+		return -1;
+	}
+	if ((num - sum) % 2) {
+		return -1;
+	}
+	
+	int count = (num - sum) / 2;
+
+	if ((count % 2 != 0) &#38;&#38; prod == -1 ||
+		(count % 2 == 0) &#38;&#38; prod == 1) {
+		return count;
+	}
+
+	return -1;
+}
+
+
+bool calc(int index, int num, int sum, int m)
+{
+	if (num == 0) {
+		if (index == 0) {
+			nums[index] = 0;
+			return calc(index + 1, num, sum, 1);			
+		}
+		else if (index &lt; n - 1) {
+			nums[index] = 1;
+			return calc(index + 1, num, sum + 1, 1);
+		}
+		else if(index == n - 1) {
+			nums[index] = s - sum;
+			return calc(index + 1, num, sum + nums[index], 1);
+		}
+		else if (index &gt;= n) {
+			return sum == s;
+		}
+	}
+
+	if (index &gt;= n) return sum == s &#38;&#38; num == 1;
+
+	int absolute = num &lt; 0 ? -num : num;
+
+	for (int i = m; i * i &lt;= absolute; ++i) {
+		if (absolute % i) continue;
+		nums[index] = i;
+		if (calc(index + 1, num / i, sum + i, i)) {
+			return true;
+		}
+		nums[index] = -i;
+		if (calc(index + 1, -num / i, sum - i, i)) {
+			return true;
+		}
+	}
+
+	nums[index] = num;
+	int count = calc(n - index - 1, s - sum - num, 1);
+	if (count &gt;= 0) {
+		for (int i = 1; i &lt;= n - index - 1; ++i) {
+			if (i &lt;= count) {
+				nums[index + i] = -1;
+			}
+			else {
+				nums[index + i] = 1;
+			}
+		}
+		return true;
+	}
+	
+	nums[index] = -num;
+	count = calc(n - index - 1, s - sum + num, -1);
+	if (count &gt;= 0) {
+		for (int i = 1; i &lt;= n - index - 1; ++i) {
+			if (i &lt;= count) {
+				nums[index + i] = -1;
+			}
+			else {
+				nums[index + i] = 1;
+			}
+		}
+		return true;
+	}
+
+	return false;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d %d&#34;, &#38;n, &#38;s, &#38;p);
+	if (calc(0, p, 0, 2)) {
+		for (int i = 0; i &lt; n; ++i) {
+			printf(&#34;%d &#34;, nums[i]);
+		}
+		printf(&#34;\n&#34;);
+	}
+	else {
+		printf(&#34;No solution\n&#34;);
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

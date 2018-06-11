@@ -1,0 +1,67 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2907">2907</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 152K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+
+int b;
+int x[10], y[10];
+int startx, starty;
+int n, m;
+
+
+int dist(int x1, int y1, int x2, int y2)
+{
+	return abs(x1 - x2) + abs(y1 - y2);
+}
+
+
+int calc()
+{
+	int perm[10];
+	for (int i = 0; i &lt; b; ++i) {
+		perm[i] = i;
+	}
+
+	int res = INT_MAX;
+
+	do {
+		int ret = dist(startx, starty, x[perm[0]], y[perm[0]]);
+		for (int i = 0; i &lt; b - 1; ++i) {
+			ret += dist(x[perm[i]], y[perm[i]], x[perm[i + 1]], y[perm[i + 1]]);
+		}
+		ret += dist(x[perm[b - 1]], y[perm[b - 1]], startx, starty);
+		if (ret &lt; res) res = ret;
+	} while (next_permutation(perm, perm + b));
+
+	return res;
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		scanf_s(&#34;%d %d %d %d %d&#34;, &#38;n, &#38;m, &#38;startx, &#38;starty, &#38;b);
+		for (int j = 0; j &lt; b; ++j) {
+			scanf_s(&#34;%d %d&#34;, &#38;x[j], &#38;y[j]);
+		}
+		printf(&#34;The shortest path has length %d\n&#34;, calc());
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

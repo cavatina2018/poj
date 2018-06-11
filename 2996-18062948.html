@@ -1,0 +1,91 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2996">2996</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 140K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+
+
+char board[40][40];
+char labels[2][6] = {
+	{ &#39;K&#39;, &#39;Q&#39;, &#39;R&#39;, &#39;B&#39;, &#39;N&#39;, &#39;P&#39; },
+	{ &#39;k&#39;, &#39;q&#39;, &#39;r&#39;, &#39;b&#39;, &#39;n&#39;, &#39;p&#39; }
+};
+int chesscount[2][6];
+pair&lt;int,int&gt; chess[2][6][10];
+
+
+bool Less1(const pair&lt;int, int&gt;&#38; a, const pair&lt;int, int&gt;&#38; b)
+{
+	if (a.first &lt; b.first) return true;
+	if (a.first &gt; b.first) return false;
+	return a.second &lt; b.second;
+}
+
+
+bool Less2(const pair&lt;int, int&gt;&#38; a, const pair&lt;int, int&gt;&#38; b)
+{
+	if (a.first &gt; b.first) return true;
+	if (a.first &lt; b.first) return false;
+	return a.second &lt; b.second;
+}
+
+
+int main()
+{
+	for (int i = 0; i &lt; 17; ++i) {
+		scanf_s(&#34;%s&#34;, board[i], 40);
+	}
+	for (int i = 0; i &lt; 8; ++i) {
+		for (int j = 0; j &lt; 8; ++j) {
+			int x = 2 * i + 1;
+			int y = 4 * j + 2;
+			for (int k = 0; k &lt; 2; ++k) {
+				for (int l = 0; l &lt; 6; ++l) {
+					if (board[x][y] == labels[k][l]) {
+						chess[k][l][chesscount[k][l]++] = make_pair(7 - i, j);
+					}
+				}
+			}
+		}
+	}
+	for (int k = 0; k &lt; 2; ++k) {
+		for (int l = 0; l &lt; 6; ++l) {
+			sort(chess[k][l], chess[k][l] + chesscount[k][l], k == 0 ? Less1 : Less2);
+		}
+
+		printf(&#34;%s&#34;, k == 0 ? &#34;White: &#34; : &#34;Black: &#34;);
+
+		for (int l = 0, first = 1; l &lt; 6; ++l) {
+			for (int m = 0; m &lt; chesscount[k][l]; ++m) {
+				if (first) {
+					first = false;
+				}
+				else {
+					printf(&#34;,&#34;);
+				}
+				if (l &lt; 5) {
+					printf(&#34;%c%c%d&#34;, labels[0][l], &#39;a&#39; + chess[k][l][m].second, 1 + chess[k][l][m].first);
+				}
+				else {
+					printf(&#34;%c%d&#34;, &#39;a&#39; + chess[k][l][m].second, 1 + chess[k][l][m].first);
+				}
+			}
+		}
+		printf(&#34;\n&#34;);
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>

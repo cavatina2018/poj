@@ -1,0 +1,215 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2618">2618</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 288K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+#include &lt;sstream&gt;
+#include &lt;string&gt;
+using namespace std;
+#define MAX_N	10
+
+
+int n, m;
+bool hwall[MAX_N][MAX_N];
+int vwall[MAX_N][MAX_N];
+bool visited[MAX_N][MAX_N][6];
+int start_x, start_y;
+int end_x, end_y;
+int buffer_x[2][MAX_N * MAX_N * 6];
+int buffer_y[2][MAX_N * MAX_N * 6];
+int buffer_p[2][MAX_N * MAX_N * 6];
+int buffer_len[2];
+
+
+bool left(int index, int x0, int y0, int p0)
+{
+	int x = x0, y = y0 - 1;
+	if (x &lt; 0 || x &gt;= n || y &lt; 0 || y &gt;= m || vwall[x][y]) return false;
+
+	int p;
+	switch (p0) {
+	case 0: p = 4; break;
+	case 1: p = 1; break;
+	case 2: p = 0; break;
+	case 3: p = 3; break;
+	case 4: p = 5; break;
+	case 5:
+	default: p = 2; break;
+	}
+
+	if (visited[x][y][p]) return false;
+	
+	visited[x][y][p] = true;
+	buffer_x[index][buffer_len[index]] = x;
+	buffer_y[index][buffer_len[index]] = y;
+	buffer_p[index][buffer_len[index]] = p;
+	buffer_len[index]++;
+
+	return x == end_x &#38;&#38; y == end_y &#38;&#38; p == 0;
+}
+
+
+bool right(int index, int x0, int y0, int p0)
+{
+	int x = x0, y = y0 + 1;
+	if (x &lt; 0 || x &gt;= n || y &lt; 0 || y &gt;= m || vwall[x][y - 1]) return false;
+
+	int p;
+	switch (p0) {
+	case 0: p = 2; break;
+	case 1: p = 1; break;
+	case 2: p = 5; break;
+	case 3: p = 3; break;
+	case 4: p = 0; break;
+	case 5:
+	default: p = 4; break;
+	}
+
+	if (visited[x][y][p]) return false;
+
+	visited[x][y][p] = true;
+	buffer_x[index][buffer_len[index]] = x;
+	buffer_y[index][buffer_len[index]] = y;
+	buffer_p[index][buffer_len[index]] = p;
+	buffer_len[index]++;
+
+	return x == end_x &#38;&#38; y == end_y &#38;&#38; p == 0;
+}
+
+
+bool up(int index, int x0, int y0, int p0)
+{
+	int x = x0 - 1, y = y0;
+	if (x &lt; 0 || x &gt;= n || y &lt; 0 || y &gt;= m || hwall[x][y]) return false;
+
+	int p;
+	switch (p0) {
+	case 0: p = 1; break;
+	case 1: p = 5; break;
+	case 2: p = 2; break;
+	case 3: p = 0; break;
+	case 4: p = 4; break;
+	case 5:
+	default: p = 3; break;
+	}
+
+	if (visited[x][y][p]) return false;
+
+	visited[x][y][p] = true;
+	buffer_x[index][buffer_len[index]] = x;
+	buffer_y[index][buffer_len[index]] = y;
+	buffer_p[index][buffer_len[index]] = p;
+	buffer_len[index]++;
+
+	return x == end_x &#38;&#38; y == end_y &#38;&#38; p == 0;
+}
+
+
+bool down(int index, int x0, int y0, int p0)
+{
+	int x = x0 + 1, y = y0;
+	if (x &lt; 0 || x &gt;= n || y &lt; 0 || y &gt;= m || hwall[x - 1][y]) return false;
+
+	int p;
+	switch (p0) {
+	case 0: p = 3; break;
+	case 1: p = 0; break;
+	case 2: p = 2; break;
+	case 3: p = 5; break;
+	case 4: p = 4; break;
+	case 5:
+	default: p = 1; break;
+	}
+
+	if (visited[x][y][p]) return false;
+
+	visited[x][y][p] = true;
+	buffer_x[index][buffer_len[index]] = x;
+	buffer_y[index][buffer_len[index]] = y;
+	buffer_p[index][buffer_len[index]] = p;
+	buffer_len[index]++;
+
+	return x == end_x &#38;&#38; y == end_y &#38;&#38; p == 0;
+}
+
+
+int calc()
+{
+	memset(visited, 0, sizeof(visited));
+	buffer_x[0][0] = start_x;
+	buffer_y[0][0] = start_y;
+	buffer_p[0][0] = 0;
+	buffer_len[0] = 1;
+	visited[start_x][start_y][0] = true;
+
+	int prev = 0, curr = 1;
+	for (int step = 1; buffer_len[prev] &gt; 0; ++step) {
+		buffer_len[curr] = 0;
+		for (int i = 0; i &lt; buffer_len[prev]; ++i) {
+			int x = buffer_x[prev][i];
+			int y = buffer_y[prev][i];
+			int p = buffer_p[prev][i];
+			if (left(curr, x, y, p) ||
+				right(curr, x, y, p) ||
+				up(curr, x, y, p) ||
+				down(curr, x, y, p)) {
+				return step;
+			}
+		}
+		curr = (curr + 1) % 2;
+		prev = (prev + 1) % 2;
+	}
+	return -1;
+}
+
+
+int main()
+{
+	cin &gt;&gt; m &gt;&gt; n;
+	cin &gt;&gt; start_y; start_y--;
+	cin &gt;&gt; start_x; start_x--;
+	cin &gt;&gt; end_y; end_y--;
+	cin &gt;&gt; end_x; end_x--;
+
+	int x, y;
+	char ch; cin &gt;&gt; ch;
+	while (true) {
+		string s; cin &gt;&gt; s;
+		if (s == &#34;h&#34;) break;
+		
+		stringstream ss; ss.str(s);
+		 ss &gt;&gt; x; cin &gt;&gt; y;
+		vwall[y - 1][x - 1] = true;
+	}
+
+	while (cin &gt;&gt; x &gt;&gt; y) {
+		hwall[y - 1][x - 1] = true;
+	}
+
+	int res;
+	if (start_x == end_x &#38;&#38; start_y == end_y) {
+		res = 0;
+	}
+	else {
+		res = calc();
+	}
+	if (res &lt; 0) {
+		cout &lt;&lt; &#34;no&#34; &lt;&lt; endl;
+	}
+	else {
+		cout &lt;&lt; res &lt;&lt; endl;
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

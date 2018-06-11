@@ -1,0 +1,82 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2627">2627</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 252K</td><td width=10px></td><td><b>Time:</b> 125MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	2000
+
+
+int n;
+long long X[MAX_N];
+long long Y[MAX_N];
+long long dist[MAX_N][MAX_N];
+int m, v;
+bool states[MAX_N];
+int buffer[2][MAX_N];
+int buflen[2];
+
+
+int calc()
+{
+	states[0] = true;
+	buffer[0][0] = 0;
+	buflen[0] = 1;
+
+	int prev = 0, curr = 1;
+	for (int i = 1; ; ++i) {
+		if (buflen[prev] == 0) break;
+
+		buflen[curr] = 0;
+		for (int j = 0; j &lt; buflen[prev]; ++j) {
+			int node = buffer[prev][j];
+
+			for (int k = 0; k &lt; n; ++k) {
+				if (k == node || states[k]) continue;
+				long long a = (X[node] - X[k]) * (X[node] - X[k]) + (Y[node] - Y[k]) * (Y[node] - Y[k]);
+				if (a &gt;((long long)m * v * 60000) * ((long long)m * v * 60000)) continue;
+				states[k] = true;
+				buffer[curr][buflen[curr]++] = k;
+				if (k == 1) return i;
+			}
+		}
+
+		prev = (prev + 1) % 2;
+		curr = (curr + 1) % 2;
+	}
+
+	return -1;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d %d&#34;, &#38;v, &#38;m);
+	double x, y;
+	while (scanf_s(&#34;%lf %lf&#34;, &#38;x, &#38;y) &gt;= 2) {
+		X[n] = (long long)(x * 1000);
+		Y[n] = (long long)(y * 1000);
+		n++;
+	}
+	while (n &gt; MAX_N) printf(&#34;...&#34;);
+
+	int ret = calc();
+	if (ret &lt; 0) {
+		printf(&#34;No.\n&#34;);
+	}
+	else {
+		printf(&#34;Yes, visiting %d other holes.\n&#34;, ret - 1);
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

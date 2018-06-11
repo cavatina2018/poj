@@ -1,0 +1,124 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3010">3010</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 224K</td><td width=10px></td><td><b>Time:</b> 594MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;string&gt;
+#include &lt;iostream&gt;
+using namespace std;
+
+
+struct TreeNode
+{
+	int count;
+	int type;
+	char content;
+	TreeNode* child;
+	TreeNode* others;
+
+	TreeNode(char** p)
+	{
+		count = 1;
+		child = NULL;
+		others = NULL;
+
+		char ch = **p;
+		if (ch &gt;= &#39;0&#39; &#38;&#38; ch &lt;= &#39;9&#39;) {
+			count = readint(p);
+		}
+		
+		ch = **p;
+		if (ch == &#39;(&#39;) {
+			type = 1;
+			(*p)++;
+			child = new TreeNode(p);
+			(*p)++;
+		}
+		else {
+			type = 0;
+			content = ch;
+			(*p)++;
+		}
+
+		ch = **p;
+		if (ch &#38;&#38; ch != &#39;)&#39;) {
+			others = new TreeNode(p);
+		}
+	}
+
+	~TreeNode()
+	{
+		if (child) delete child;
+		if (others) delete others;
+	}
+
+	int readint(char** p)
+	{
+		int res = 0;
+		while (true) {
+			char ch = **p;
+			if (ch &lt; &#39;0&#39; || ch &gt; &#39;9&#39;) break;
+			res *= 10;
+			res += ch - &#39;0&#39;;
+			(*p)++;
+		}
+		return res;
+	}
+
+	char get(int&#38; index)
+	{
+		if (type == 0) {
+			if (index &lt; count) {
+				return content;
+			}
+			index -= count;
+		}
+		else {
+			for (int i = 0; i &lt; count; ++i) {
+				char ch = child-&gt;get(index);
+				if (ch) return ch;
+			}
+		}
+
+		if (!others) {
+			return 0;
+		}
+
+		return others-&gt;get(index);
+	}
+};
+
+
+int main()
+{
+	while (true) {
+		string s;
+		int index;
+		cin &gt;&gt; s &gt;&gt; index;
+		if (s == &#34;0&#34; &#38;&#38; index == 0) break;
+
+		char* p = (char*)s.c_str();
+		TreeNode* root = new TreeNode(&#38;p);
+
+		char ch = root-&gt;get(index);
+		if (ch) {
+			cout &lt;&lt; ch &lt;&lt; endl;
+		}
+		else {
+			cout &lt;&lt; 0 &lt;&lt; endl;
+		}
+		delete root;
+	}
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

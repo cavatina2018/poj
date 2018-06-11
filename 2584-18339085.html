@@ -1,0 +1,164 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2584">2584</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 244K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;sstream&gt;
+using namespace std;
+
+#define MAX_N	20
+#define MAX_M	100
+int types[256];
+int n, m;
+int from[MAX_N];
+int to[MAX_N];
+int counts[5];
+int relations[MAX_N + MAX_M][MAX_N + MAX_M];
+int relcount[MAX_N + MAX_M];
+int type[MAX_N + MAX_M];
+int match[MAX_N + MAX_M];
+int path[MAX_N + MAX_M];
+int stack[MAX_N + MAX_M];
+
+
+bool findpath(int&#38; end)
+{
+	int stacklen = 0;
+	for (int i = 0; i &lt; n + m; ++i)
+	{
+		if (type[i] == 0 &#38;&#38; match[i] &lt; 0)
+		{
+			stack[stacklen++] = i;
+		}
+	}
+
+	memset(path, 0xff, sizeof(path));
+
+	while (stacklen &gt; 0)
+	{
+		int start = stack[--stacklen];
+
+		for (int i = 0; i &lt; relcount[start]; ++i)
+		{
+			end = relations[start][i];
+			if (end == match[start]) continue;
+			if (match[end] &lt; 0)
+			{
+				path[end] = start;
+				return true;
+			}
+			if (path[end] &lt; 0)
+			{
+				path[end] = start;
+				path[match[end]] = end;
+				stack[stacklen++] = match[end];
+			}
+		}
+	}
+
+	return false;
+}
+
+
+int maxmatch()
+{
+	int res = 0, end = 0;
+	if (n == 0 || m == 0)
+	{
+		return res;
+	}
+
+	memset(match, 0xff, sizeof(match));
+
+	while (findpath(end))
+	{
+		while (true)
+		{
+			int prev = path[end];
+			match[prev] = end;
+			match[end] = prev;
+
+			if (path[prev] &lt; 0) break;
+			end = path[prev];
+		}
+		++res;
+	}
+
+	return res;
+}
+
+
+int main()
+{
+	types[&#39;S&#39;] = 0;
+	types[&#39;M&#39;] = 1;
+	types[&#39;L&#39;] = 2;
+	types[&#39;X&#39;] = 3;
+	types[&#39;T&#39;] = 4;
+
+	char buf[1000];
+
+	while (true)
+	{
+		scanf_s(&#34;%s&#34;, buf, 1000);
+		if (!strcmp(buf, &#34;ENDOFINPUT&#34;)) break;
+		scanf_s(&#34;%d&#34;, &#38;n);
+		m = 0;
+
+		while (n &lt; 1 || n &gt; MAX_N) printf(&#34;...&#34;);
+
+		for (int i = 0; i &lt; n; ++i) {
+			scanf_s(&#34;%s&#34;, buf, 1000);
+			from[i] = types[buf[0]];
+			to[i] = types[buf[1]];
+		}
+
+		for (int i = 0; i &lt; 5; ++i) {
+			scanf_s(&#34;%d&#34;, &#38;counts[i]);
+			if (counts[i] &gt; n) counts[i] = n;
+		}
+
+		scanf_s(&#34;%s&#34;, buf, 1000);
+
+		memset(relcount, 0, sizeof(relcount));
+
+		for (int i = 0; i &lt; n; ++i)	{
+			type[i] = 0;
+		}
+
+		for(int i = 0; i &lt; 5; ++i) {
+			for (int j = 0; j &lt; counts[i]; ++j) {
+				int fid = (m++) + n;
+				for (int k = 0; k &lt; n; ++k) {
+					if (i &gt;= from[k] &#38;&#38; i &lt;= to[k]) {
+						relations[k][relcount[k]++] = fid;
+						relations[fid][relcount[fid]++] = k;
+					}
+				}
+				type[fid] = 1;
+			}
+		}
+
+		if (maxmatch() == n) {
+			printf(&#34;T-shirts rock!\n&#34;);
+		}
+		else {
+			printf(&#34;I&#39;d rather not wear a shirt anyway...\n&#34;);
+		}
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

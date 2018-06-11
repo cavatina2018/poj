@@ -1,0 +1,97 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_java.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3226">3226</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 3296K</td><td width=10px></td><td><b>Time:</b> 172MS</td></tr>
+<tr><td><b>Language:</b> Java</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_java" style="font-family:Courier New,Courier,monospace">import java.math.*;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+
+public class Main {
+	
+	static BigInteger[][] results = new BigInteger[27][27];
+	static boolean[][] states = new boolean[27][27];
+	static int n;
+	static String str;
+	static boolean[] digitstates = new boolean[26];
+
+	static BigInteger calc(int digits, int symbols)
+	{
+		if (states[digits][symbols]) {
+			return results[digits][symbols];
+		}
+
+		BigInteger res = BigInteger.ZERO;
+
+		if (digits == 0) {
+			res = BigInteger.ONE;
+		}
+		else if (digits == 1) {
+			res = BigInteger.valueOf(symbols);
+		}
+		else if (symbols == 26) {
+			res = BigInteger.valueOf(symbols - 1).multiply(calc(digits - 1, symbols - 1));
+		}
+		else {
+			res = BigInteger.valueOf(symbols).multiply(calc(digits - 1, symbols - 1));
+		}
+
+		results[digits][symbols] = res;
+		states[digits][symbols] = true;
+		return res;
+	}
+
+
+	static BigInteger calc()
+	{
+		BigInteger res = BigInteger.ZERO;
+
+		for(int i = 0; i &lt; 26; ++i) {
+			digitstates[i] = false;
+		}
+
+		for (int i = 0, sym = 26; i &lt; n; ++i, --sym) {
+			int digit = n - i - 1;
+			int idx = str.charAt(i) - &#39;A&#39;;
+			for (int j = 0; j &lt; idx; ++j) {
+				if (digitstates[j]) continue;
+				res = res.add(calc(digit, sym - 1));
+			}
+			digitstates[idx] = true;
+		}
+
+		return res;
+	}
+	
+	
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+		
+		while(true)
+		{
+			n = in.nextInt();
+			if (n == 0) break;
+
+			for(int i = 0; i &lt; 27; ++i) {
+				for(int j = 0; j &lt; 27; ++j) {
+					states[i][j] = false;
+				}
+			}
+		
+			str = in.next();
+			System.out.printf(&#34;%s%n&#34;, calc().toString());
+		}
+	}
+};</pre>
+</ul>
+</body></html>

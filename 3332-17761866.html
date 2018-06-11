@@ -1,0 +1,117 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3332">3332</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 244K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+
+
+bool number(char** p)
+{
+	if (**p &lt; &#39;0&#39; || **p &gt; &#39;9&#39;)
+	{
+		return false;
+	}
+
+	++*p;
+
+	while (**p &gt;= &#39;0&#39; &#38;&#38; **p &lt;= &#39;9&#39;)
+	{
+		++*p;
+	}
+
+	return true;
+}
+
+
+bool integer(char** p)
+{
+	if (**p == &#39;+&#39; || **p == &#39;-&#39;)
+	{
+		++*p;
+	}
+	return number(p);
+}
+
+
+bool fraction(char** p, bool&#38; flag)
+{
+	if (**p == &#39;+&#39; || **p == &#39;-&#39;)
+	{
+		++*p;
+	}
+
+	if (!number(p))
+	{
+		return false;
+	}
+
+	if (**p == &#39;.&#39;)
+	{
+		++*p;
+		flag = true;
+		return number(p);
+	}
+
+	flag = false;
+	return true;
+}
+
+
+bool real(char** p)
+{
+	bool flag = false;
+	if (!fraction(p, flag))
+	{
+		return false;
+	}
+
+	if (**p == &#39;e&#39; || **p == &#39;E&#39;)
+	{
+		++*p;
+		if (!integer(p))
+		{
+			return false;
+		}
+	}
+	else if (!flag)
+	{
+		//return false;
+	}
+
+	if (**p) return false;
+	return true;
+}
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i)
+	{
+		string s; cin &gt;&gt; s;
+	
+		char* p = (char*)s.c_str();
+		if (real(&#38;p))
+		{
+			cout &lt;&lt; &#34;LEGAL&#34; &lt;&lt; endl;
+		}
+		else
+		{
+			cout &lt;&lt; &#34;ILLEGAL&#34; &lt;&lt; endl;
+		}
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

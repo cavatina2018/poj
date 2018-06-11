@@ -1,0 +1,93 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3107">3107</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 2024K</td><td width=10px></td><td><b>Time:</b> 500MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;cstring&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	50001
+
+
+int n;
+struct Edge
+{
+	int to;
+	int next;
+};
+Edge edges[MAX_N * 2];
+int firstedge[MAX_N];
+bool states[MAX_N];
+int rescount;
+int results[MAX_N];
+int m;
+
+
+int calc(int node)
+{
+	states[node] = true;
+
+	int first = 0, sum = 1;
+	for (int i = firstedge[node]; i; i = edges[i].next) {
+		int next = edges[i].to;
+		if (states[next]) continue;
+
+		int ret = calc(next);
+		if (ret &gt; first) {
+			first = ret;
+		}
+		sum += ret;
+	}
+
+	if (n - sum &gt; first) {
+		first = n - sum;
+	}
+	if (first &lt; m) {
+		m = first;
+		rescount = 1;
+		results[0] = node;
+	}
+	else if (first == m) {
+		results[rescount++] = node;
+	}
+
+	return sum;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d&#34;, &#38;n);
+	for (int i = 1; i &lt;= n - 1; ++i) {
+		int a, b; scanf_s(&#34;%d %d&#34;, &#38;a, &#38;b);
+		edges[2 * i - 1].to = b;
+		edges[2 * i - 1].next = firstedge[a];
+		firstedge[a] = 2 * i - 1;
+		edges[2 * i].to = a;
+		edges[2 * i].next = firstedge[b];
+		firstedge[b] = 2 * i;
+	}
+
+	m = INT_MAX;
+	calc(1);
+	
+	sort(results, results + rescount);
+	for (int i = 0; i &lt; rescount; ++i) {
+		printf(&#34;%d &#34;, results[i]);
+	}
+	printf(&#34;\n&#34;);
+	return 0;
+}</pre>
+</ul>
+</body></html>

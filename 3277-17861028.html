@@ -1,0 +1,100 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3277">3277</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 2120K</td><td width=10px></td><td><b>Time:</b> 297MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;queue&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	40000
+
+
+int n;
+long long A[MAX_N];
+long long B[MAX_N];
+long long H[MAX_N];
+pair&lt;int,bool&gt; ranking[MAX_N * 2];
+bool states[MAX_N];
+
+
+bool Less1(const pair&lt;int, bool&gt;&#38; a, const pair&lt;int, bool&gt;&#38; b)
+{
+	long long x = a.second ? B[a.first] : A[a.first];
+	long long y = b.second ? B[b.first] : A[b.first];
+	return x &lt; y;
+}
+
+
+struct Less2
+{
+	bool operator()(int a, int b) const
+	{
+		return H[a] &lt; H[b];
+	}
+};
+
+
+long long calc()
+{
+	sort(ranking, ranking + 2 * n, Less1);
+
+	priority_queue&lt;int, vector&lt;int&gt;, Less2&gt; q;
+
+	long long res = 0, prev = 0;
+
+	for (int i = 0; i &lt; 2 * n; ++i) {
+		long long curr = q.empty() ? 0 : H[q.top()];
+		int idx = ranking[i].first;
+		bool flag = ranking[i].second;
+		long long pos = flag ? B[idx] : A[idx];
+
+		if (flag) {
+			states[idx] = true;
+		}
+		else {
+			q.push(idx);
+		}
+
+		while (!q.empty()) {
+			if (states[q.top()]) {
+				q.pop();
+			}
+			else {
+				break;
+			}
+		}
+
+		long long curr2 = q.empty() ? 0 : H[q.top()];
+		if (curr2 != curr) {
+			res += (pos - prev) * curr;
+			prev = pos;
+		}
+	}
+
+	return res;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d&#34;, &#38;n);
+	for (int i = 0; i &lt; n; ++i) {
+		scanf_s(&#34;%lld %lld %lld&#34;, &#38;A[i], &#38;B[i], &#38;H[i]);
+		ranking[2 * i] = make_pair(i, false);
+		ranking[2 * i + 1] = make_pair(i, true);
+	}
+	printf(&#34;%lld\n&#34;, calc());
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

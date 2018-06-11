@@ -1,0 +1,85 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2785">2785</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 49184K</td><td width=10px></td><td><b>Time:</b> 5313MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;algorithm&gt;
+using namespace std;
+#define MAX_N	4000
+
+
+int n;
+int nums[2][2][MAX_N];
+int sums[2][MAX_N * MAX_N];
+
+
+long long calc()
+{
+	long long res = 0;
+
+	for (int i = 0; i &lt; 2; ++i)
+	{
+		for (int j = 0; j &lt; n; ++j)
+		{
+			for (int k = 0; k &lt; n; ++k)
+			{
+				sums[i][j * n + k] = i &gt; 0 ? -(nums[i][0][j] + nums[i][1][k]) : (nums[i][0][j] + nums[i][1][k]);
+			}
+		}
+		sort(sums[i], sums[i] + n * n);
+	}
+
+	if (sums[1][0] &gt; sums[0][n * n - 1] || sums[0][0] &gt; sums[1][n * n - 1])
+	{
+		return 0;
+	}
+
+	int s = lower_bound(sums[0], sums[0] + n * n, sums[1][0]) - sums[0];
+	int e = upper_bound(sums[0], sums[0] + n * n, sums[1][n * n - 1]) - sums[0];
+	if (s == n * n) s = 0;
+
+	for (int i = s, k; i &lt; e;)
+	{
+		int s = sums[0][i], count = 0;
+
+		for (k = i; k &lt; e; ++k)
+		{
+			if (sums[0][k] != s) break;
+			++count;
+		}
+
+		int start = lower_bound(sums[1], sums[1] + n * n, s) - sums[1];
+		int end = upper_bound(sums[1], sums[1] + n * n, s) - sums[1];
+
+		res += count * (end - start);
+		i = k;
+	}
+
+	return res;
+}
+
+
+int main()
+{
+	scanf_s(&#34;%d&#34;, &#38;n);
+	for (int i = 0; i &lt; n; ++i)
+	{
+		scanf_s(&#34;%d&#34;, &#38;nums[0][0][i]);
+		scanf_s(&#34;%d&#34;, &#38;nums[0][1][i]);
+		scanf_s(&#34;%d&#34;, &#38;nums[1][0][i]);
+		scanf_s(&#34;%d&#34;, &#38;nums[1][1][i]);
+	}
+	printf(&#34;%lld\n&#34;, calc());
+    return 0;
+}</pre>
+</ul>
+</body></html>

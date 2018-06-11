@@ -1,0 +1,96 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2632">2632</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=cavatina2016">cavatina2016</a></td></tr>
+<tr><td><b>Memory:</b> 292K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;cstring&gt;
+#define MAX_N	200
+
+
+int n, m, r, c;
+int grid[MAX_N][MAX_N];
+int robot_x[MAX_N];
+int robot_y[MAX_N];
+int robot_dir[MAX_N];
+
+
+int main()
+{
+	int t; scanf_s(&#34;%d&#34;, &#38;t);
+	for (int i = 0; i &lt; t; ++i) {
+		memset(grid, 0, sizeof(grid));
+
+		scanf_s(&#34;%d %d %d %d&#34;, &#38;c, &#38;r, &#38;n, &#38;m);
+		for (int j = 1; j &lt;= n; ++j) {
+			int y, x; char d[10];
+			scanf_s(&#34;%d %d %s&#34;, &#38;y, &#38;x, d, 10);
+			robot_x[j] = x;
+			robot_y[j] = y;
+			grid[x][y] = j;
+
+			switch (d[0]) {
+			case &#39;N&#39;: robot_dir[j] = 2; break;
+			case &#39;S&#39;: robot_dir[j] = 0; break;
+			case &#39;E&#39;: robot_dir[j] = 1; break;
+			default: robot_dir[j] = 3;
+			}
+		}
+
+		bool stop = false;
+		for (int j = 0; j &lt; m; ++j) {
+			int robot, repeat; char action[10];
+			scanf_s(&#34;%d %s %d&#34;, &#38;robot, action, 10, &#38;repeat);
+
+			if (stop) continue;
+
+			for (int k = 0; k &lt; repeat &#38;&#38; !stop; ++k) {
+				if (action[0] == &#39;L&#39;) {
+					robot_dir[robot] = (robot_dir[robot] + 1) % 4;
+				}
+				else if (action[0] == &#39;R&#39;) {
+					robot_dir[robot] = (robot_dir[robot] + 3) % 4;
+				}
+				else {
+					int x = robot_x[robot], y = robot_y[robot];
+					switch (robot_dir[robot]) {
+					case 0: --x; break;
+					case 2: ++x; break;
+					case 1: ++y; break;
+					default: --y; break;
+					}
+
+					if (x &lt;= 0 || x &gt;= r + 1 || y &lt;= 0 || y &gt;= c + 1) {
+						printf(&#34;Robot %d crashes into the wall\n&#34;, robot);
+						stop = true;
+					}
+					else if (grid[x][y]) {
+						printf(&#34;Robot %d crashes into robot %d\n&#34;, robot, grid[x][y]);
+						stop = true;
+					}
+					else {
+						grid[robot_x[robot]][robot_y[robot]] = 0;
+						grid[x][y] = robot;
+						robot_x[robot] = x;
+						robot_y[robot] = y;
+					}
+				}
+			}
+		}
+
+		if (!stop) {
+			printf(&#34;OK\n&#34;);
+		}
+	}
+    return 0;
+}</pre>
+</ul>
+</body></html>
